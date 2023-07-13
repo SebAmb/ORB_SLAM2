@@ -38,9 +38,10 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
 
 int main(int argc, char **argv)
 {
+
     if(argc != 6)
     {
-        cerr << endl << "Usage: ./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
+        cerr << endl << "Usage: ./stereo_4seasons path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
         return 1;
     }
 
@@ -49,6 +50,8 @@ int main(int argc, char **argv)
     vector<string> vstrImageRight;
     vector<double> vTimestamps;
     LoadImages(string(argv[3]), string(argv[4]), string(argv[5]), vstrImageLeft, vstrImageRight, vTimestamps);
+
+    cout << "end LoadImages" << endl;
 
     if(vstrImageLeft.empty() || vstrImageRight.empty())
     {
@@ -151,34 +154,26 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
     {
         string s;
         getline(fTimes,s);
+        //cout << "s = " << s << endl;
         if(!s.empty())
         {
-            // time format: 2013-05-28 08:46:03.011404202
-            // time format saved: 084603.011404202
-            s = s.substr(s.find(" "));
-            s.erase(remove(s.begin(), s.end(), ':'), s.end()); //remove ':' from string
-            s.erase(remove(s.begin(), s.end(), '.'), s.end()); //remove '.' from string
+            // time file content per line: 1586252025010388736 1586252025.0103888512 0.0499890000
+            // time format taken: 1586252025.0103888512
 
             stringstream ss;
             ss << s;
-            double t;
-            ss >> t;
+            double t, t_2;
+            string img_id;
+            //ss >> t;
+            ss >> img_id >> t >> t_2;
 
-            //cout << "original time 1: " << s << "\t Temps en double : " << t << "\t Temps en double (en ns): " << t/1e9 << endl;
-            vTimestamps.push_back(t/1e9);
+            /*cout << "original time : " << s << "\t Temps en double : " << t << endl;
+            cout << "img_id: " << t_1 << "\t t_2 : " << t_2 << endl;*/
+            vTimestamps.push_back(t);
+            //cout << "left img: " << img_id.c_str() << "\t right img : " << img_id.c_str() << endl;
+            vstrImageLeft.push_back(strPathLeft + "/" + img_id.c_str() + ".png");
+            vstrImageRight.push_back(strPathLeft + "/" + img_id.c_str() + ".png");
         }
-    }
-
-    const int nTimes = vTimestamps.size();
-    vstrImageLeft.resize(nTimes);
-    vstrImageRight.resize(nTimes);
-
-    for(int i=0; i<nTimes; i++)
-    {
-        stringstream ss;
-        ss << setfill('0') << setw(10) << i;
-        vstrImageLeft[i] = strPathLeft + "/" + ss.str() + ".png";
-        vstrImageRight[i] = strPathRight + "/" + ss.str() + ".png";
     }
 
 }

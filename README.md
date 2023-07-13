@@ -41,6 +41,14 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 /home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_00/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_01/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_00/timestamps.txt
 ```
 
+## 4seasons Dataset
+```
+./stereo_4seasons path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file
+```
+```
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/undistorted_images/cam0 /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/undistorted_images/cam1 /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/times.txt
+```
+
 ## EuRoC Dataset
 
 1. Download a sequence (ASL format) from http://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets
