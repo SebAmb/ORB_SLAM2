@@ -10,9 +10,9 @@ Camera.fy: 1056.9497022783046
 Camera.cx: 952.1135175072209
 Camera.cy: 592.824593628865
 
-Camera.k1: -0.12427059109969174
-Camera.k2: 0.08183525905697533
-Camera.k3: -0.020818847104251116
+Camera.k1: 0.0  #-0.12427059109969174
+Camera.k2: 0.0  #0.08183525905697533
+Camera.k3: 0.0  #-0.020818847104251116
 Camera.p1: 0.0
 Camera.p2: 0.0
 
@@ -23,7 +23,7 @@ Camera.height: 1195
 Camera.fps: 8
 
 # stereo baseline times fx
-Camera.bf: 211.325748
+Camera.bf: 211.764620
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 1

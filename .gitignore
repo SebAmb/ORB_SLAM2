@@ -11,6 +11,10 @@ Examples/ROS/ORB_SLAM2/Stereo
 Examples/ROS/ORB_SLAM2/build/
 Examples/Stereo/stereo_euroc
 Examples/Stereo/stereo_kitti
+Examples/Stereo/stereo_4seasons
+Examples/Stereo/stereo_flexy
+Examples/Stereo/stereo_kitti_360
+Examples/Stereo/stereo_finnforest
 KeyFrameTrajectory.txt
 Thirdparty/DBoW2/build/
 Thirdparty/DBoW2/lib/
