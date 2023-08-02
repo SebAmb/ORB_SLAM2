@@ -87,7 +87,8 @@ void Viewer::Run()
     pangolin::OpenGlMatrix Twc;
     Twc.SetIdentity();
 
-    cv::namedWindow("ORB-SLAM2: Current Frame");
+    //cv::namedWindow("ORB-SLAM2: Current Frame");
+    cv::namedWindow("ORB-SLAM2: Current Frame", cv::WINDOW_NORMAL);  // for allowing resize of window
 
     bool bFollow = true;
     bool bLocalizationMode = false;
