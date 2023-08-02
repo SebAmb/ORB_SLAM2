@@ -21,32 +21,32 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ```
 
 ```
-./Examples/Stereo/stereo_kitti Vocabulary/ORBvoc.txt Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/04
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/04
 ```
 ```
-./Examples/Stereo/stereo_kitti Vocabulary/ORBvoc.txt Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01
 ```
 
 ## KITTI-360 Dataset
 ```
-./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file
+./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_sequence_folder
 ```
 ```
-./Examples/Stereo/stereo_kitti_360 Vocabulary/ORBvoc.txt Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_01/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_00/timestamps.txt
+./Examples/Stereo/stereo_kitti_360 Vocabulary/ORBvoc.txt Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_00/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_01/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync/image_00/timestamps.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0007_sync
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_00/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_01/data_rect /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync/image_00/timestamps.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync
 ```
 
 ## 4seasons Dataset
 ```
-./stereo_4seasons path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file
+./stereo_4seasons path_to_vocabulary path_to_settings path_to_sequence_folder
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/undistorted_images/cam0 /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/undistorted_images/cam1 /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45/times.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45
 ```
 
 ## EuRoC Dataset

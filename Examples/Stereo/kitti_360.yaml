@@ -2,6 +2,9 @@
 
 #--------------------------------------------------------------------------------------------
 # Camera Parameters. Adjust them!
+# TODO: 
+#   - faire 2 matrices differentes pour les 2 caméras, car elles le sont pour KITTI-360
+#   - check why le code plante au bout d'un moment
 #--------------------------------------------------------------------------------------------
 
 # Camera calibration and distortion parameters (OpenCV) 
@@ -12,17 +15,24 @@ Camera.cy: 238.769549
 
 Camera.k1: 0.0
 Camera.k2: 0.0
+Camera.k3: 0.0
 Camera.p1: 0.0
 Camera.p2: 0.0
+#Camera.k1: -0.344441
+#Camera.k2: 0.141678
+#Camera.k3: 0.000414
+#Camera.p1: -0.000222
+#Camera.p2: -0.029608
+# D_01: -0.353195 0.161996 0.000383 -0.000242 -0.041476
 
-Camera.width: 1408.0
-Camera.height: 376.0
+Camera.width: 1408
+Camera.height: 376
 
 # Camera frames per second 
 Camera.fps: 10.0
 
 # stereo baseline times fx
-Camera.bf: 387.5744
+Camera.bf: 328.318735
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 1
@@ -35,7 +45,7 @@ ThDepth: 40
 #--------------------------------------------------------------------------------------------
 
 # ORB Extractor: Number of features per image
-ORBextractor.nFeatures: 2000
+ORBextractor.nFeatures: 3000
 
 # ORB Extractor: Scale factor between levels in the scale pyramid 	
 ORBextractor.scaleFactor: 1.2

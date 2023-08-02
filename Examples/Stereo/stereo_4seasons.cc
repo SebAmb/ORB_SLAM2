@@ -33,15 +33,15 @@
 
 using namespace std;
 
-void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
+void LoadImages(const string &strPathToSequence,
                 vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps);
 
 int main(int argc, char **argv)
 {
 
-    if(argc != 6)
+    if(argc != 4)
     {
-        cerr << endl << "Usage: ./stereo_4seasons path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
+        cerr << endl << "Usage: ./stereo_4seasons path_to_vocabulary path_to_settings path_to_sequence_folder" << endl;
         return 1;
     }
 
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
     vector<string> vstrImageLeft;
     vector<string> vstrImageRight;
     vector<double> vTimestamps;
-    LoadImages(string(argv[3]), string(argv[4]), string(argv[5]), vstrImageLeft, vstrImageRight, vTimestamps);
+    LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps);
 
-    cout << "end LoadImages" << endl;
+    //cout << "end LoadImages" << endl;
 
     if(vstrImageLeft.empty() || vstrImageRight.empty())
     {
@@ -144,10 +144,13 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
+
+void LoadImages(const string &strPathToSequence,
                 vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps)
 {
-
+    string strPathTimes = strPathToSequence + "/times.txt";
+    bool isFirstTime = true;
+    double timeBase = 0.0;
     ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
     while(!fTimes.eof())
@@ -162,17 +165,23 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
 
             stringstream ss;
             ss << s;
-            double t, t_2;
+            double t, time_, exposure_time;
             string img_id;
             //ss >> t;
-            ss >> img_id >> t >> t_2;
-
+            ss >> img_id >> time_ >> exposure_time;
+            if (isFirstTime)
+            {
+                timeBase = time_;
+                isFirstTime = false;
+            }
+            t = time_ - timeBase;
+            //cout << "time : " << t << endl;
             /*cout << "original time : " << s << "\t Temps en double : " << t << endl;
             cout << "img_id: " << t_1 << "\t t_2 : " << t_2 << endl;*/
             vTimestamps.push_back(t);
             //cout << "left img: " << img_id.c_str() << "\t right img : " << img_id.c_str() << endl;
-            vstrImageLeft.push_back(strPathLeft + "/" + img_id.c_str() + ".png");
-            vstrImageRight.push_back(strPathLeft + "/" + img_id.c_str() + ".png");
+            vstrImageLeft.push_back(strPathToSequence + "/undistorted_images/cam0/" + img_id.c_str() + ".png");
+            vstrImageRight.push_back(strPathToSequence + "/undistorted_images/cam1/" + img_id.c_str() + ".png");
         }
     }
 

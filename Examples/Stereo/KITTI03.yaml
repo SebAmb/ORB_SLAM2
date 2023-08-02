@@ -12,6 +12,7 @@ Camera.cy: 172.854
 
 Camera.k1: 0.0
 Camera.k2: 0.0
+Camera.k3: 0.0
 Camera.p1: 0.0
 Camera.p2: 0.0
 

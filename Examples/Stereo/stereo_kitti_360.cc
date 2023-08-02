@@ -33,14 +33,22 @@
 
 using namespace std;
 
-void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
+void LoadImages(const string &strPathToSequence,
                 vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps);
+
+
+bool isFileExist(const std::string &filePath)
+{
+    std::ifstream file(filePath);
+    return file.good();
+}
+
 
 int main(int argc, char **argv)
 {
-    if(argc != 6)
+    if(argc != 4)
     {
-        cerr << endl << "Usage: ./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
+        cerr << endl << "Usage: ./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_sequence_folder" << endl;
         return 1;
     }
 
@@ -48,7 +56,7 @@ int main(int argc, char **argv)
     vector<string> vstrImageLeft;
     vector<string> vstrImageRight;
     vector<double> vTimestamps;
-    LoadImages(string(argv[3]), string(argv[4]), string(argv[5]), vstrImageLeft, vstrImageRight, vTimestamps);
+    LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps);
 
     if(vstrImageLeft.empty() || vstrImageRight.empty())
     {
@@ -88,6 +96,12 @@ int main(int argc, char **argv)
         {
             cerr << endl << "Failed to load image at: "
                  << string(vstrImageLeft[ni]) << endl;
+            return 1;
+        }
+        if(imRight.empty())
+        {
+            cerr << endl << "Failed to load image at: "
+                 << string(vstrImageRight[ni]) << endl;
             return 1;
         }
 
@@ -141,31 +155,62 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
+
+void LoadImages(const string &strPathToSequence,
                 vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps)
 {
-
+    string strPathTimes = strPathToSequence + "/image_00/timestamps.txt";
     ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
+    bool isFirstTime = true;
+    double timeDoubleBase = 0.0;
+    double t_decimal_value_base = 0.0;
     while(!fTimes.eof())
     {
-        string s;
-        getline(fTimes,s);
-        if(!s.empty())
+        string line, time_wo_ms, decimal_part;
+
+        while (getline(fTimes, line))
         {
-            // time format: 2013-05-28 08:46:03.011404202
-            // time format saved: 084603.011404202
-            s = s.substr(s.find(" "));
-            s.erase(remove(s.begin(), s.end(), ':'), s.end()); //remove ':' from string
-            s.erase(remove(s.begin(), s.end(), '.'), s.end()); //remove '.' from string
+            size_t pos = line.find('.');
+            if (pos != string::npos)
+            {
+                time_wo_ms = line.substr(0, pos);
+                decimal_part = line.substr(pos);
+            }
 
-            stringstream ss;
-            ss << s;
-            double t;
-            ss >> t;
+            std::istringstream ss(time_wo_ms);
+            int year, month, day, hour, minute, second;
+            char discard; // To discard '-' and ':' characters
+            ss >> year >> discard >> month >> discard >> day >> hour >> discard >> minute >> discard >> second;
+            if (ss.fail())
+            {
+                std::cerr << "Erreur lors de la conversion en temps pour la ligne : " << line << std::endl;
+                continue;
+            }
+            // Création de la structure tm
+            std::tm timeStruct = {0};
+            timeStruct.tm_year = year - 1900;
+            timeStruct.tm_mon = month - 1;
+            timeStruct.tm_mday = day;
+            timeStruct.tm_hour = hour;
+            timeStruct.tm_min = minute;
+            timeStruct.tm_sec = second;
+            std::time_t timeValue = std::mktime(&timeStruct);
 
+            double timeDouble = static_cast<double>(timeValue);
+            double t_decimal_value = std::stod(decimal_part);
+            //std::cout << "Temps en double (partie entiere) : " << timeDouble << std::endl;
+            //std::cout << "Temps en double (decimal part): " << t_decimal_value << std::endl;
+            if (isFirstTime)
+            {
+                timeDoubleBase = timeDouble;
+                t_decimal_value_base = t_decimal_value;
+                isFirstTime = false;
+            }
+            double t = (timeDouble - timeDoubleBase) + (t_decimal_value - t_decimal_value_base);
+            //cout << "final time en double : " << t << endl;
             //cout << "original time 1: " << s << "\t Temps en double : " << t << "\t Temps en double (en ns): " << t/1e9 << endl;
-            vTimestamps.push_back(t/1e9);
+            vTimestamps.push_back(t);
         }
     }
 
@@ -177,8 +222,16 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
     {
         stringstream ss;
         ss << setfill('0') << setw(10) << i;
-        vstrImageLeft[i] = strPathLeft + "/" + ss.str() + ".png";
-        vstrImageRight[i] = strPathRight + "/" + ss.str() + ".png";
+        vstrImageLeft[i] = strPathToSequence + "/image_00/data_rect/" + ss.str() + ".png";
+        vstrImageRight[i] = strPathToSequence + "/image_01/data_rect/" + ss.str() + ".png";
+        if (!isFileExist(vstrImageLeft[i]))
+        {
+            std::cout << "WARNING: file " << vstrImageLeft[i] << " does not exist" << std::endl;
+        }
+        if (!isFileExist(vstrImageRight[i]))
+        {
+            std::cout << "WARNING: file " << vstrImageRight[i] << " does not exist" << std::endl;
+        }
     }
 
 }
