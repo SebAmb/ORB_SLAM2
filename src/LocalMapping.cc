@@ -84,7 +84,8 @@ void LocalMapping::Run()
                 KeyFrameCulling();
             }
 
-            mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
+            // line commented for disabling loop closing
+            //mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
         }
         else if(Stop())
         {

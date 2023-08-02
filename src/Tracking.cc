@@ -1519,7 +1519,9 @@ void Tracking::Reset()
 
     // Reset Loop Closing
     cout << "Reseting Loop Closing...";
-    mpLoopClosing->RequestReset();
+    cout << "NOTE ehmk: loop closing disabled";
+    // line commented for disabling loop closing
+    //mpLoopClosing->RequestReset();
     cout << " done" << endl;
 
     // Clear BoW Database
