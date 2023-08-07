@@ -36,9 +36,9 @@ void LoadImages(const string &strPathToSequence, vector<string> &vstrImageLeft,
 
 int main(int argc, char **argv)
 {
-    if(argc != 4)
+    if(argc != 5)
     {
-        cerr << endl << "Usage: ./stereo_kitti path_to_vocabulary path_to_settings path_to_sequence" << endl;
+        cerr << endl << "Usage: ./stereo_kitti path_to_vocabulary path_to_settings path_to_sequence path_to_trajectory_result" << endl;
         return 1;
     }
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI("CameraTrajectory.txt");
+    SLAM.SaveTrajectoryKITTI(string(argv[4]));  //"CameraTrajectory.txt");
 
     return 0;
 }

@@ -37,9 +37,9 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
 
 int main(int argc, char **argv)
 {
-    if(argc != 6)
+    if(argc != 7)
     {
-        cerr << endl << "Usage: ./stereo_finnforest path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
+        cerr << endl << "Usage: ./stereo_finnforest path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file path_to_trajectory_result" << endl;
         return 1;
     }
 
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI("CameraTrajectory.txt");
+    SLAM.SaveTrajectoryKITTI(string(argv[6]));  //"CameraTrajectoryFinnForest.txt");
 
     return 0;
 }
