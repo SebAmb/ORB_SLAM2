@@ -665,7 +665,7 @@ void System::SaveTrajectory4seasons(const string &filename, vector<string> &vstr
         /*f << vstrImageId[idx_frame] << "," << setprecision(9) << twc.at<float>(0) << "," << twc.at<float>(1) << "," << twc.at<float>(2) << "," << 
              q[0] << "," << q[1] << "," << q[2] << "," << q[3] << "," << 0.0 << "," << 0.0 << "," << 0.0 << endl;*/
         idx_frame += 1;
-        f << setprecision(15) << *lT << " " << setprecision(9) << twc.at<float>(0) << " " << twc.at<float>(1) << " " << twc.at<float>(2) << " " << 
+        f << setprecision(5) << *lT << " " << setprecision(9) << twc.at<float>(0) << " " << twc.at<float>(1) << " " << twc.at<float>(2) << " " << 
              q[0] << " " << q[1] << " " << q[2] << " " << q[3] << endl;
     }
     f.close();

@@ -172,7 +172,7 @@ void LoadImages(const string &strPathToSequence,
             double time_, exposure_time;
             string img_id;
             //ss >> t;
-            ss >> img_id >> setprecision(20) >> time_ >> setprecision(12) >> exposure_time;
+            ss >> img_id >> setprecision(10) >> time_ >> setprecision(10) >> exposure_time;
 //            ss >> img_id >> time_ >> exposure_time;
             //cout << "time_ : " << time_ << endl;
             /*if (isFirstTime)
