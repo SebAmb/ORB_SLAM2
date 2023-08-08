@@ -34,7 +34,8 @@
 using namespace std;
 
 void LoadImages(const string &strPathToSequence,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps);
+                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps, 
+                vector<string> &vstrImageId);
 
 int main(int argc, char **argv)
 {
@@ -47,9 +48,10 @@ int main(int argc, char **argv)
 
     // Retrieve paths to images
     vector<string> vstrImageLeft;
+    vector<string> vstrImageId;
     vector<string> vstrImageRight;
     vector<double> vTimestamps;
-    LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps);
+    LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps, vstrImageId);
 
     //cout << "end LoadImages" << endl;
 
@@ -139,18 +141,19 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI(string(argv[4]));  //"CameraTrajectory4seasons.txt");
+    SLAM.SaveTrajectory4seasons(string(argv[4]), vstrImageId);  //"CameraTrajectory4seasons.txt");
 
     return 0;
 }
 
 
 void LoadImages(const string &strPathToSequence,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps)
+                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps, 
+                vector<string> &vstrImageId)
 {
     string strPathTimes = strPathToSequence + "/times.txt";
-    bool isFirstTime = true;
-    double timeBase = 0.0;
+    /*bool isFirstTime = true;
+    double timeBase = 0.0;*/
     ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
     while(!fTimes.eof())
@@ -165,23 +168,28 @@ void LoadImages(const string &strPathToSequence,
 
             stringstream ss;
             ss << s;
-            double t, time_, exposure_time;
+            //double t;
+            double time_, exposure_time;
             string img_id;
             //ss >> t;
-            ss >> img_id >> time_ >> exposure_time;
-            if (isFirstTime)
+            ss >> img_id >> setprecision(20) >> time_ >> setprecision(12) >> exposure_time;
+//            ss >> img_id >> time_ >> exposure_time;
+            //cout << "time_ : " << time_ << endl;
+            /*if (isFirstTime)
             {
                 timeBase = time_;
                 isFirstTime = false;
             }
-            t = time_ - timeBase;
+            t = time_ - timeBase;*/
             //cout << "time : " << t << endl;
             /*cout << "original time : " << s << "\t Temps en double : " << t << endl;
             cout << "img_id: " << t_1 << "\t t_2 : " << t_2 << endl;*/
-            vTimestamps.push_back(t);
+//            vTimestamps.push_back(t);
+            vTimestamps.push_back(time_);
             //cout << "left img: " << img_id.c_str() << "\t right img : " << img_id.c_str() << endl;
             vstrImageLeft.push_back(strPathToSequence + "/undistorted_images/cam0/" + img_id.c_str() + ".png");
             vstrImageRight.push_back(strPathToSequence + "/undistorted_images/cam1/" + img_id.c_str() + ".png");
+            vstrImageId.push_back(img_id);
         }
     }
 

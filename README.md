@@ -4,6 +4,12 @@
 **Authors:** [Raul Mur-Artal](http://webdiis.unizar.es/~raulmur/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/), [J. M. M. Montiel](http://webdiis.unizar.es/~josemari/) and [Dorian Galvez-Lopez](http://doriangalvez.com/) ([DBoW2](https://github.com/dorian3d/DBoW2))
 
 
+# compilation
+cd /home/src/ORB_SLAM2/build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j20
+
+
 # 1. License
 
 ORB-SLAM2 is released under a [GPLv3 license](https://github.com/raulmur/ORB_SLAM2/blob/master/License-gpl.txt). For a list of all code/library dependencies (and associated licenses), please see [Dependencies.md](https://github.com/raulmur/ORB_SLAM2/blob/master/Dependencies.md).
@@ -23,10 +29,10 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ```
 
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/04
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/09 /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI/ORB-SLAM2/09.txt
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01 /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI/ORB-SLAM2/01.txt
 ```
 
 ## KITTI-360 Dataset
@@ -34,13 +40,13 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_sequence_folder
 ```
 ```
-./Examples/Stereo/stereo_kitti_360 Vocabulary/ORBvoc.txt Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync
+./Examples/Stereo/stereo_kitti_360 Vocabulary/ORBvoc.txt Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0000_sync.txt
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0007_sync
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0007_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0007_sync.txt
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0003_sync.txt
 ```
 
 ## 4seasons Dataset
@@ -48,7 +54,7 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ./stereo_4seasons path_to_vocabulary path_to_settings path_to_sequence_folder
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45 /home/sharedWithHost/VO/Datasets/resultsOdometry/4seasons/ORB-SLAM2/countryside_1_train.txt
 ```
 
 
@@ -60,7 +66,7 @@ xxxxxxxxxxxx
 xxxxxxxxxxxxx
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_finnforest /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/finnforest.yaml /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam2_sr22555667/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam3_sr22555660/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/times_S03.txt 
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_finnforest /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/finnforest.yaml /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam2_sr22555667/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam3_sr22555660/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/times_S03.txt /home/sharedWithHost/VO/Datasets/resultsOdometry/FinnForest/ORB-SLAM2/S03_8HZ_summer_seq3_shortOdomSeq.txt
 ```
 
 
