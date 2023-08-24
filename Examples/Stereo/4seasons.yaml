@@ -29,7 +29,7 @@ Camera.bf: 150.4427
 Camera.RGB: 1
 
 # Close/Far threshold. Baseline times.
-ThDepth: 40
+ThDepth: 50
 
 #--------------------------------------------------------------------------------------------
 # ORB Parameters

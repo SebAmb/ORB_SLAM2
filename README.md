@@ -56,6 +56,9 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ```
 /home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45 /home/sharedWithHost/VO/Datasets/resultsOdometry/4seasons/ORB-SLAM2/countryside_1_train.txt
 ```
+```
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_2_train/recording_2020-06-12_11-26-43_stereo_images_undistorted/recording_2020-06-12_11-26-43 /home/sharedWithHost/VO/Datasets/resultsOdometry/4seasons/ORB-SLAM2/countryside_2_train.txt
+```
 
 
 ## FinnForest Dataset
