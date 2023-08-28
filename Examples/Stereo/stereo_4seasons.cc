@@ -33,16 +33,33 @@
 
 using namespace std;
 
-void LoadImages(const string &strPathToSequence,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps, 
-                vector<string> &vstrImageId);
+
+bool isFileExist(const std::string &filePath)
+{
+    std::ifstream file(filePath);
+    return file.good();
+}
+
+
+void checkIfFileExist(std::string strPathToFile)
+{
+    if (!isFileExist(strPathToFile))
+        std::cerr << "the file (" << strPathToFile << ") does not exist" << std::endl;
+}
+
+
+void LoadImages(const std::string &strPathToSequence, 
+                const std::string &sequenceID, const std::string &dateAcquisition,
+                std::vector<std::string> &vstrImageLeft, std::vector<std::string> &vstrImageRight, 
+                std::vector<double> &vTimestampsImages, 
+                std::vector<std::string> &vstrImageId);
 
 int main(int argc, char **argv)
 {
 
-    if(argc != 5)
+    if(argc != 7)
     {
-        cerr << endl << "Usage: ./stereo_4seasons path_to_vocabulary path_to_settings path_to_sequence_folder path_to_trajectory_result" << endl;
+        cerr << endl << "Usage: ./stereo_4seasons <path_to_vocabulary> <path_to_settings> <path_to_sequence> <sequenceID> <dateAcquisition> <dir_trajectory_result> " << endl;
         return 1;
     }
 
@@ -51,7 +68,27 @@ int main(int argc, char **argv)
     vector<string> vstrImageId;
     vector<string> vstrImageRight;
     vector<double> vTimestamps;
-    LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps, vstrImageId);
+
+    string strPathToSequence(argv[3]);
+    string sequenceID(argv[4]);
+    string dateAcquisition(argv[5]);
+    string dirTrajResults(string(argv[6]) + "/4seasons/ORB_SLAM2/" + sequenceID + "/" + sequenceID + ".txt");
+
+    cout << "Loading images for sequence " << sequenceID << "..." << std::endl;
+    LoadImages(strPathToSequence, sequenceID, dateAcquisition,
+               vstrImageLeft, vstrImageRight, vTimestamps, vstrImageId);
+    
+    if(vstrImageLeft.empty() || vstrImageRight.empty())
+    {
+        cerr << "ERROR: No images in provided path." << endl;
+        return 1;
+    }
+
+    if(vstrImageLeft.size()!=vstrImageRight.size())
+    {
+        cerr << "ERROR: Different number of left and right images." << endl;
+        return 1;
+    }
 
     //cout << "end LoadImages" << endl;
 
@@ -141,56 +178,45 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectory4seasons(string(argv[4]), vstrImageId);  //"CameraTrajectory4seasons.txt");
+    SLAM.SaveTrajectory4seasons(dirTrajResults, vstrImageId);
 
     return 0;
 }
 
 
-void LoadImages(const string &strPathToSequence,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimestamps, 
-                vector<string> &vstrImageId)
+
+void LoadImages(const std::string &strPathToSequence, 
+                const std::string &sequenceID, const std::string &dateAcquisition,
+                std::vector<std::string> &vstrImageLeft, std::vector<std::string> &vstrImageRight, 
+                std::vector<double> &vTimestampsImages, 
+                std::vector<std::string> &vstrImageId)
 {
-    string strPathTimes = strPathToSequence + "/times.txt";
-    /*bool isFirstTime = true;
-    double timeBase = 0.0;*/
-    ifstream fTimes;
+    std::string tmpIntermediateDir = sequenceID + "/" + "recording_" + dateAcquisition + "_stereo_images_undistorted" + "/recording_" + dateAcquisition;
+    std::string strPathTimes = strPathToSequence + "/" + tmpIntermediateDir.c_str() + "/times.txt";
+    std::string strDirToImages = strPathToSequence + "/" + tmpIntermediateDir.c_str();
+    checkIfFileExist(strPathTimes);
+    //checkIfDirExist(strDirToImages);
+    std::cout << "strPathTimes for images = " << strPathTimes << std::endl;
+    
+    std::ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
     while(!fTimes.eof())
     {
-        string s;
-        getline(fTimes,s);
-        //cout << "s = " << s << endl;
+        std::string s;
+        std::getline(fTimes,s);
         if(!s.empty())
         {
-            // time file content per line: 1586252025010388736 1586252025.0103888512 0.0499890000
-            // time format taken: 1586252025.0103888512
-
-            stringstream ss;
+            std::stringstream ss;
             ss << s;
-            //double t;
             double time_, exposure_time;
-            string img_id;
-            //ss >> t;
-            ss >> img_id >> setprecision(10) >> time_ >> setprecision(10) >> exposure_time;
-//            ss >> img_id >> time_ >> exposure_time;
-            //cout << "time_ : " << time_ << endl;
-            /*if (isFirstTime)
-            {
-                timeBase = time_;
-                isFirstTime = false;
-            }
-            t = time_ - timeBase;*/
-            //cout << "time : " << t << endl;
-            /*cout << "original time : " << s << "\t Temps en double : " << t << endl;
-            cout << "img_id: " << t_1 << "\t t_2 : " << t_2 << endl;*/
-//            vTimestamps.push_back(t);
-            vTimestamps.push_back(time_);
-            //cout << "left img: " << img_id.c_str() << "\t right img : " << img_id.c_str() << endl;
-            vstrImageLeft.push_back(strPathToSequence + "/undistorted_images/cam0/" + img_id.c_str() + ".png");
-            vstrImageRight.push_back(strPathToSequence + "/undistorted_images/cam1/" + img_id.c_str() + ".png");
+            std::string img_id;
+            ss >> img_id >> std::setprecision(10) >> time_ >> std::setprecision(10) >> exposure_time;
+            vTimestampsImages.push_back(time_);
+            checkIfFileExist(strDirToImages + "/undistorted_images/cam0/" + img_id.c_str() + ".png");
+            checkIfFileExist(strDirToImages + "/undistorted_images/cam1/" + img_id.c_str() + ".png");
+            vstrImageLeft.push_back(strDirToImages + "/undistorted_images/cam0/" + img_id.c_str() + ".png");
+            vstrImageRight.push_back(strDirToImages + "/undistorted_images/cam1/" + img_id.c_str() + ".png");
             vstrImageId.push_back(img_id);
         }
     }
-
 }

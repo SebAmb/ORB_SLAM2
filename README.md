@@ -20,56 +20,75 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 # 2. Stereo Examples
 
 ## KITTI Dataset
-
-1. Download the dataset (grayscale images) from http://www.cvlibs.net/datasets/kitti/eval_odometry.php 
-
-2. Execute the following command. Change `KITTIX.yaml`to KITTI00-02.yaml, KITTI03.yaml or KITTI04-12.yaml for sequence 0 to 2, 3, and 4 to 12 respectively. Change `PATH_TO_DATASET_FOLDER` to the uncompressed dataset folder. Change `SEQUENCE_NUMBER` to 00, 01, 02,.., 11. 
 ```
-./Examples/Stereo/stereo_kitti Vocabulary/ORBvoc.txt Examples/Stereo/KITTIX.yaml PATH_TO_DATASET_FOLDER/dataset/sequences/SEQUENCE_NUMBER
+./stereo_kitti path_to_vocabulary path_to_settings path_to_sequence dir_trajectory_result
+
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
 
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/09 /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI/ORB-SLAM2/09.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/02 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI00-02.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/01 /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI/ORB-SLAM2/01.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/09 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
+
+
 
 ## KITTI-360 Dataset
 ```
-./stereo_kitti_360 path_to_vocabulary path_to_settings path_to_sequence_folder
+./stereo_kitti360 path_to_vocabulary path_to_settings path_to_sequence dir_trajectory_result
 ```
 ```
-./Examples/Stereo/stereo_kitti_360 Vocabulary/ORBvoc.txt Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0000_sync.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0000_sync /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0007_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0007_sync.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti_360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti_360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0003_sync /home/sharedWithHost/VO/Datasets/resultsOdometry/KITTI-360/ORB-SLAM2/2013_05_28_drive_0003_sync.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti360 /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/kitti360.yaml /home/sharedWithHost/VO/Datasets/KITTI-360/data_2d_raw/2013_05_28_drive_0007_sync /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
+
+
 
 ## 4seasons Dataset
 ```
-./stereo_4seasons path_to_vocabulary path_to_settings path_to_sequence_folder
+./stereo_4seasons <path_to_vocabulary> <path_to_settings> <path_to_sequence> <sequenceID> <dateAcquisition> <dir_trajectory_result>
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_1_train/recording_2020-04-07_11-33-45_stereo_images_undistorted/recording_2020-04-07_11-33-45 /home/sharedWithHost/VO/Datasets/resultsOdometry/4seasons/ORB-SLAM2/countryside_1_train.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside countryside_1_train 2020-04-07_11-33-45 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside/countryside_2_train/recording_2020-06-12_11-26-43_stereo_images_undistorted/recording_2020-06-12_11-26-43 /home/sharedWithHost/VO/Datasets/resultsOdometry/4seasons/ORB-SLAM2/countryside_2_train.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/Countryside countryside_2_train 2020-06-12_11-26-43 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
+
+```
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/CityLoop city_loop_2_train 2021-01-07_14-36-17 /home/sharedWithHost/VO/Datasets/resultsOdometry
+```
+
+```
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_4seasons /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/4seasons.yaml /home/sharedWithHost/VO/Datasets/4seasons/OldTown old_town_1_train 2020-10-08_11-53-41 /home/sharedWithHost/VO/Datasets/resultsOdometry
+```
+
+
+
 
 
 ## FinnForest Dataset
 ```
-xxxxxxxxxxxx
+./stereo_finnforest <path_to_vocabulary> <path_to_settings> <path_to_left_folder> <path_to_right_folder> <path_to_times_file> <dir_trajectory_result> <sequenceID>
 ```
 ```
 xxxxxxxxxxxxx
 ```
 ```
-/home/src/ORB_SLAM2/Examples/Stereo/stereo_finnforest /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/finnforest.yaml /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam2_sr22555667/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam3_sr22555660/ /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/times_S03.txt /home/sharedWithHost/VO/Datasets/resultsOdometry/FinnForest/ORB-SLAM2/S03_8HZ_summer_seq3_shortOdomSeq.txt
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_finnforest /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/finnforest.yaml /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam2_sr22555667 /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/images_cam3_sr22555660 /home/sharedWithHost/VO/Datasets/FinnForest/S03_8HZ_summer_seq3_shortOdomSeq/S03_8Hz/times_S03.txt /home/sharedWithHost/VO/Datasets/resultsOdometry S03_8HZ_summer_seq3_shortOdomSeq
 ```
 
 

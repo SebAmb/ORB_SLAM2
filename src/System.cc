@@ -432,6 +432,18 @@ void System::SaveTrajectoryKITTI(const string &filename)
         return;
     }
 
+    size_t position_dir_tmp(filename.find_last_of("/"));
+    string save_dir_tmp(filename.substr(0, position_dir_tmp));
+    cout << " folder: " << save_dir_tmp << endl;
+    string cmd_save_dir_tmp("mkdir -p " + save_dir_tmp);
+    //cout << " file: " << filename.substr(found+1) << endl;
+    int system_return_val = system(cmd_save_dir_tmp.c_str());
+    if(system_return_val == -1)
+    {
+        // The system method failed
+        cerr << "The command '" << cmd_save_dir_tmp << "' failed." << endl;
+    }
+
     vector<KeyFrame*> vpKFs = mpMap->GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
 
@@ -486,6 +498,18 @@ void System::SaveTrajectoryKITTI360(const string &filename)
     {
         cerr << "ERROR: SaveTrajectoryKITTI360 cannot be used for monocular." << endl;
         return;
+    }
+
+    size_t position_dir_tmp(filename.find_last_of("/"));
+    string save_dir_tmp(filename.substr(0, position_dir_tmp));
+    cout << " folder: " << save_dir_tmp << endl;
+    string cmd_save_dir_tmp("mkdir -p " + save_dir_tmp);
+    //cout << " file: " << filename.substr(found+1) << endl;
+    int system_return_val = system(cmd_save_dir_tmp.c_str());
+    if(system_return_val == -1)
+    {
+        // The system method failed
+        cerr << "The command '" << cmd_save_dir_tmp << "' failed." << endl;
     }
 
     vector<KeyFrame*> vpKFs = mpMap->GetAllKeyFrames();
@@ -682,6 +706,18 @@ void System::SaveTrajectory4seasons(const string &filename, vector<string> &vstr
     {
         cerr << "ERROR: SaveTrajectory4seasons cannot be used for monocular." << endl;
         return;
+    }
+
+    size_t position_dir_tmp(filename.find_last_of("/"));
+    string save_dir_tmp(filename.substr(0, position_dir_tmp));
+    cout << " folder: " << save_dir_tmp << endl;
+    string cmd_save_dir_tmp("mkdir -p " + save_dir_tmp);
+    //cout << " file: " << filename.substr(found+1) << endl;
+    int system_return_val = system(cmd_save_dir_tmp.c_str());
+    if(system_return_val == -1)
+    {
+        // The system method failed
+        cerr << "The command '" << cmd_save_dir_tmp << "' failed." << endl;
     }
 
     vector<KeyFrame*> vpKFs = mpMap->GetAllKeyFrames();

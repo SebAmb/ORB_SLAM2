@@ -92,9 +92,9 @@ add_executable(stereo_kitti
 Examples/Stereo/stereo_kitti.cc)
 target_link_libraries(stereo_kitti ${PROJECT_NAME})
 
-add_executable(stereo_kitti_360
-Examples/Stereo/stereo_kitti_360.cc)
-target_link_libraries(stereo_kitti_360 ${PROJECT_NAME})
+add_executable(stereo_kitti360
+Examples/Stereo/stereo_kitti360.cc)
+target_link_libraries(stereo_kitti360 ${PROJECT_NAME})
 
 add_executable(stereo_4seasons
 Examples/Stereo/stereo_4seasons.cc)

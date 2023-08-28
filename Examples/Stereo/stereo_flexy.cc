@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 {
     if(argc != 5)
     {
-        cerr << endl << "Usage: ./stereo_flexy path_to_vocabulary path_to_settings path_to_sequence path_to_trajectory_result" << endl;
+        cerr << endl << "Usage: ./stereo_flexy <path_to_vocabulary> <path_to_settings> <path_to_sequence> <dir_trajectory_result>" << endl;
         return 1;
     }
 
@@ -56,10 +56,29 @@ int main(int argc, char **argv)
     vector<double> vTimestamps;
     LoadImages(string(argv[3]), vstrImageLeft, vstrImageRight, vTimestamps);
 
+    if(vstrImageLeft.empty() || vstrImageRight.empty())
+    {
+        cerr << "ERROR: No images in provided path." << endl;
+        return 1;
+    }
+
+    if(vstrImageLeft.size()!=vstrImageRight.size())
+    {
+        cerr << "ERROR: Different number of left and right images." << endl;
+        return 1;
+    }
+
     const int nImages = vstrImageLeft.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::STEREO,true);
+
+    // get seq id
+    string tmp_str(argv[3]);
+    size_t pos_tmp(tmp_str.find_last_of("/"));
+    string sequenceID(tmp_str.substr(pos_tmp+1));
+    cout << " sequenceID: " << sequenceID << endl;
+    string dirTrajResults(string(argv[4]) + "/Flexy/ORB_SLAM2/" + sequenceID + "/" + sequenceID + ".txt");
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
@@ -130,7 +149,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI(string(argv[4]));  //"CameraTrajectoryFlexyVO.txt");
+    SLAM.SaveTrajectoryKITTI(dirTrajResults);
 
     return 0;
 }
