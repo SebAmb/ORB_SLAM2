@@ -20,6 +20,7 @@
 
 #include "Viewer.h"
 #include <pangolin/pangolin.h>
+#include "ehmkParams.h"
 
 #include <mutex>
 
@@ -138,6 +139,11 @@ void Viewer::Run()
         cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
         cv::waitKey(mT);
+        EHMK_PARAMS::DebugEHMK MyDebug;
+        if (MyDebug.getIsDebug())
+        {
+            MyDebug.saveLeftImageOrb(im);
+        }
 
         if(menuReset)
         {

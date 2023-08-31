@@ -22,6 +22,7 @@
 #include "Converter.h"
 #include "ORBmatcher.h"
 #include <thread>
+#include "ehmkParams.h"
 
 namespace ORB_SLAM2
 {
@@ -465,6 +466,8 @@ void Frame::ComputeImageBounds(const cv::Mat &imLeft)
 
 void Frame::ComputeStereoMatches()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     mvuRight = vector<float>(N,-1.0f);
     mvDepth = vector<float>(N,-1.0f);
 
@@ -487,6 +490,12 @@ void Frame::ComputeStereoMatches()
         const float r = 2.0f*mvScaleFactors[mvKeysRight[iR].octave];
         const int maxr = ceil(kpY+r);
         const int minr = floor(kpY-r);
+        if ((iR <= 2) && (MyDebug.getIsDebug())) {
+            std::cout << "MK: mvKeysRight[" << iR << "].octave = " << mvKeysRight[iR].octave << std::endl;
+            std::cout << "MK: mvScaleFactors[" << mvKeysRight[iR].octave << "] = " << mvScaleFactors[mvKeysRight[iR].octave] << std::endl;
+            std::cout << "MK: kpY = " << kpY << std::endl;
+            std::cout << "MK: r = " << r << ", maxr = " << maxr  << ", minr = " << minr << std::endl;
+        }
 
         for(int yi=minr;yi<=maxr;yi++)
             vRowIndices[yi].push_back(iR);
@@ -507,6 +516,12 @@ void Frame::ComputeStereoMatches()
         const int &levelL = kpL.octave;
         const float &vL = kpL.pt.y;
         const float &uL = kpL.pt.x;
+        if ((iL <= 2) && (MyDebug.getIsDebug())) {
+            //std::cout << "MK: kpL = " << kpL << std::endl;
+            std::cout << "MK: levelL = " << levelL << std::endl;
+            std::cout << "MK: vL = " << vL << std::endl;
+            std::cout << "MK: uL = " << uL << std::endl;
+        }
 
         const vector<size_t> &vCandidates = vRowIndices[vL];
 

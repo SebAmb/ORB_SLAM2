@@ -31,6 +31,10 @@ For a closed-source version of ORB-SLAM2 for commercial purposes, please contact
 ```
 
 ```
+/home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI03.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/03 /home/sharedWithHost/VO/Datasets/resultsOdometry
+```
+
+```
 /home/src/ORB_SLAM2/Examples/Stereo/stereo_kitti /home/src/ORB_SLAM2/Vocabulary/ORBvoc.txt /home/src/ORB_SLAM2/Examples/Stereo/KITTI04-12.yaml /home/sharedWithHost/VO/Datasets/KITTI/data_odometry_gray/dataset/sequences/09 /home/sharedWithHost/VO/Datasets/resultsOdometry
 ```
 

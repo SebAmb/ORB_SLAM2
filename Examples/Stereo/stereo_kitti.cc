@@ -24,6 +24,7 @@
 #include<fstream>
 #include<iomanip>
 #include<chrono>
+#include "ehmkParams.h"
 
 #include<opencv2/core/core.hpp>
 
@@ -72,6 +73,9 @@ int main(int argc, char **argv)
     cout << " sequenceID: " << sequenceID << endl;
     string dirTrajResults(string(argv[4]) + "/KITTI/ORB_SLAM2/" + sequenceID + "/" + sequenceID + ".txt");
 
+    // init debug
+    EHMK_PARAMS::DebugEHMK MyDebug(dirTrajResults);
+    
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
     vTimesTrack.resize(nImages);

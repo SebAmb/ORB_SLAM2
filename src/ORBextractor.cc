@@ -62,6 +62,7 @@
 
 #include "ORBextractor.h"
 
+#include "ehmkParams.h"
 
 using namespace cv;
 using namespace std;
@@ -412,6 +413,8 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     nfeatures(_nfeatures), scaleFactor(_scaleFactor), nlevels(_nlevels),
     iniThFAST(_iniThFAST), minThFAST(_minThFAST)
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+    
     mvScaleFactor.resize(nlevels);
     mvLevelSigma2.resize(nlevels);
     mvScaleFactor[0]=1.0f;
@@ -420,6 +423,10 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     {
         mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
         mvLevelSigma2[i]=mvScaleFactor[i]*mvScaleFactor[i];
+        if (MyDebug.getIsDebug()) {
+            std::cout << "MK: mvScaleFactor[" << i << "] = " << mvScaleFactor[i] << std::endl;
+            std::cout << "MK: mvLevelSigma2[" << i << "] = " << mvLevelSigma2[i] << std::endl;
+        }
     }
 
     mvInvScaleFactor.resize(nlevels);
@@ -435,6 +442,7 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     mnFeaturesPerLevel.resize(nlevels);
     float factor = 1.0f / scaleFactor;
     float nDesiredFeaturesPerScale = nfeatures*(1 - factor)/(1 - (float)pow((double)factor, (double)nlevels));
+    if (MyDebug.getIsDebug())   std::cout << "MK: nDesiredFeaturesPerScale = " << nDesiredFeaturesPerScale << std::endl;
 
     int sumFeatures = 0;
     for( int level = 0; level < nlevels-1; level++ )
@@ -442,8 +450,10 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
         mnFeaturesPerLevel[level] = cvRound(nDesiredFeaturesPerScale);
         sumFeatures += mnFeaturesPerLevel[level];
         nDesiredFeaturesPerScale *= factor;
+        if (MyDebug.getIsDebug())   std::cout << "MK: mnFeaturesPerLevel[" << level << "] = " << mnFeaturesPerLevel[level] << std::endl;
     }
     mnFeaturesPerLevel[nlevels-1] = std::max(nfeatures - sumFeatures, 0);
+    if (MyDebug.getIsDebug())   std::cout << "MK: mnFeaturesPerLevel[" << nlevels-1 << "] = " << mnFeaturesPerLevel[nlevels-1] << std::endl;
 
     const int npoints = 512;
     const Point* pattern0 = (const Point*)bit_pattern_31_;
