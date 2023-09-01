@@ -423,7 +423,7 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     {
         mvScaleFactor[i]=mvScaleFactor[i-1]*scaleFactor;
         mvLevelSigma2[i]=mvScaleFactor[i]*mvScaleFactor[i];
-        if (MyDebug.getIsDebug()) {
+        if (MyDebug.getIsDebugConsole()) {
             std::cout << "MK: mvScaleFactor[" << i << "] = " << mvScaleFactor[i] << std::endl;
             std::cout << "MK: mvLevelSigma2[" << i << "] = " << mvLevelSigma2[i] << std::endl;
         }
@@ -442,7 +442,7 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
     mnFeaturesPerLevel.resize(nlevels);
     float factor = 1.0f / scaleFactor;
     float nDesiredFeaturesPerScale = nfeatures*(1 - factor)/(1 - (float)pow((double)factor, (double)nlevels));
-    if (MyDebug.getIsDebug())   std::cout << "MK: nDesiredFeaturesPerScale = " << nDesiredFeaturesPerScale << std::endl;
+    if (MyDebug.getIsDebugConsole())   std::cout << "MK: nDesiredFeaturesPerScale = " << nDesiredFeaturesPerScale << std::endl;
 
     int sumFeatures = 0;
     for( int level = 0; level < nlevels-1; level++ )
@@ -450,10 +450,10 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
         mnFeaturesPerLevel[level] = cvRound(nDesiredFeaturesPerScale);
         sumFeatures += mnFeaturesPerLevel[level];
         nDesiredFeaturesPerScale *= factor;
-        if (MyDebug.getIsDebug())   std::cout << "MK: mnFeaturesPerLevel[" << level << "] = " << mnFeaturesPerLevel[level] << std::endl;
+        if (MyDebug.getIsDebugConsole())   std::cout << "MK: mnFeaturesPerLevel[" << level << "] = " << mnFeaturesPerLevel[level] << std::endl;
     }
     mnFeaturesPerLevel[nlevels-1] = std::max(nfeatures - sumFeatures, 0);
-    if (MyDebug.getIsDebug())   std::cout << "MK: mnFeaturesPerLevel[" << nlevels-1 << "] = " << mnFeaturesPerLevel[nlevels-1] << std::endl;
+    if (MyDebug.getIsDebugConsole())   std::cout << "MK: mnFeaturesPerLevel[" << nlevels-1 << "] = " << mnFeaturesPerLevel[nlevels-1] << std::endl;
 
     const int npoints = 512;
     const Point* pattern0 = (const Point*)bit_pattern_31_;

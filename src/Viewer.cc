@@ -140,10 +140,8 @@ void Viewer::Run()
         cv::imshow("ORB-SLAM2: Current Frame",im);
         cv::waitKey(mT);
         EHMK_PARAMS::DebugEHMK MyDebug;
-        if (MyDebug.getIsDebug())
-        {
+        if (MyDebug.getIsSaveDebugImages())
             MyDebug.saveLeftImageOrb(im);
-        }
 
         if(menuReset)
         {

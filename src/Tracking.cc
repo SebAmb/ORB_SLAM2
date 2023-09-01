@@ -37,6 +37,7 @@
 
 #include<mutex>
 
+#include "ehmkParams.h"
 
 using namespace std;
 
@@ -166,6 +167,8 @@ void Tracking::SetViewer(Viewer *pViewer)
 
 cv::Mat Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat &imRectRight, const double &timestamp)
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     mImGray = imRectLeft;
     cv::Mat imGrayRight = imRectRight;
 
@@ -266,6 +269,8 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp)
 
 void Tracking::Track()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     if(mState==NO_IMAGES_YET)
     {
         mState = NOT_INITIALIZED;
@@ -508,8 +513,16 @@ void Tracking::Track()
 
 void Tracking::StereoInitialization()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     if(mCurrentFrame.N>500)
     {
+        if (MyDebug.getIsDebugConsole())
+        {
+            std::cout << "Mk: stereo initialization with min features = 500)" << std::endl;
+            std::cout << "\t-> Mk: total of " << mCurrentFrame.N << " keypoints..." << std::endl;
+        }
+
         // Set Frame pose to the origin
         mCurrentFrame.SetPose(cv::Mat::eye(4,4,CV_32F));
 
@@ -557,6 +570,11 @@ void Tracking::StereoInitialization()
         mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
 
         mState=OK;
+    }
+    else if (MyDebug.getIsDebugConsole())
+    {
+        std::cout << "Mk: not enough keypoints for stereo initialization ? (min = 500)" << std::endl;
+        std::cout << "\t-> Mk: got " << mCurrentFrame.N << " keypoints..." << std::endl;
     }
 }
 
@@ -756,6 +774,10 @@ void Tracking::CheckReplacedInLastFrame()
 
 bool Tracking::TrackReferenceKeyFrame()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+    if (MyDebug.getIsDebugConsole())
+        std::cout << "Mk: in TrackReferenceKeyFrame function maybe relocalisation...?" << std::endl;
+
     // Compute Bag of Words vector
     mCurrentFrame.ComputeBoW();
 
@@ -866,6 +888,9 @@ void Tracking::UpdateLastFrame()
 
 bool Tracking::TrackWithMotionModel()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+    if (MyDebug.getIsDebugConsoleOften())
+        std::cout << "Mk: in TrackWithMotionModel function..." << std::endl;
     ORBmatcher matcher(0.9,true);
 
     // Update last frame pose according to its reference keyframe
@@ -899,6 +924,11 @@ bool Tracking::TrackWithMotionModel()
 
     // Discard outliers
     int nmatchesMap = 0;
+    if (MyDebug.getIsDebugConsoleOften()) {
+        std::cout << "Discard outliers after PoseOptimization: " <<
+                     "nmatches = " << nmatches <<
+                     " , nmatchesMap = " << nmatchesMap << std::endl;
+    }
     for(int i =0; i<mCurrentFrame.N; i++)
     {
         if(mCurrentFrame.mvpMapPoints[i])
@@ -916,7 +946,12 @@ bool Tracking::TrackWithMotionModel()
             else if(mCurrentFrame.mvpMapPoints[i]->Observations()>0)
                 nmatchesMap++;
         }
-    }    
+    }
+    if (MyDebug.getIsDebugConsoleOften()) {
+        std::cout << "after Discarding outliers: " <<
+                     "nmatches = " << nmatches <<
+                     " , nmatchesMap = " << nmatchesMap << std::endl;
+    }
 
     if(mbOnlyTracking)
     {

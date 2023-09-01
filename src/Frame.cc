@@ -63,6 +63,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     :mpORBvocabulary(voc),mpORBextractorLeft(extractorLeft),mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()),mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mpReferenceKF(static_cast<KeyFrame*>(NULL))
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     // Frame ID
     mnId=nNextId++;
 
@@ -468,6 +470,7 @@ void Frame::ComputeStereoMatches()
 {
     EHMK_PARAMS::DebugEHMK MyDebug;
 
+    mvuLeftEhmk = vector<float>(N,-1.0f);
     mvuRight = vector<float>(N,-1.0f);
     mvDepth = vector<float>(N,-1.0f);
 
@@ -483,6 +486,13 @@ void Frame::ComputeStereoMatches()
 
     const int Nr = mvKeysRight.size();
 
+    if (false){
+        if (MyDebug.getIsDebugConsoleVeryOften()) {
+            std::cout << "MK: number of keypoints left = " << N << std::endl;
+            std::cout << "MK: number of keypoints right = " << Nr << std::endl;
+        }
+    }
+
     for(int iR=0; iR<Nr; iR++)
     {
         const cv::KeyPoint &kp = mvKeysRight[iR];
@@ -490,11 +500,13 @@ void Frame::ComputeStereoMatches()
         const float r = 2.0f*mvScaleFactors[mvKeysRight[iR].octave];
         const int maxr = ceil(kpY+r);
         const int minr = floor(kpY-r);
-        if ((iR <= 2) && (MyDebug.getIsDebug())) {
-            std::cout << "MK: mvKeysRight[" << iR << "].octave = " << mvKeysRight[iR].octave << std::endl;
-            std::cout << "MK: mvScaleFactors[" << mvKeysRight[iR].octave << "] = " << mvScaleFactors[mvKeysRight[iR].octave] << std::endl;
-            std::cout << "MK: kpY = " << kpY << std::endl;
-            std::cout << "MK: r = " << r << ", maxr = " << maxr  << ", minr = " << minr << std::endl;
+        if (false){
+            if ((iR >= 10) && (iR <= 20) && (MyDebug.getIsDebugConsoleVeryOften())) {
+                std::cout << "MK: mvKeysRight[" << iR << "].octave = " << mvKeysRight[iR].octave << std::endl;
+                std::cout << "MK: mvScaleFactors[" << mvKeysRight[iR].octave << "] = " << mvScaleFactors[mvKeysRight[iR].octave] << std::endl;
+                std::cout << "MK: kpY = " << kpY << std::endl;
+                std::cout << "MK: r = " << r << ", maxr = " << maxr  << ", minr = " << minr << std::endl;
+            }
         }
 
         for(int yi=minr;yi<=maxr;yi++)
@@ -506,6 +518,14 @@ void Frame::ComputeStereoMatches()
     const float minD = 0;
     const float maxD = mbf/minZ;
 
+    if (false){
+        if (MyDebug.getIsDebugConsoleVeryOften()) {
+            std::cout << "vRowIndices[0] dimension (rows x cols) : " << vRowIndices.size() << " x " << vRowIndices[0].size() << std::endl;
+            std::cout << "vRowIndices[100] dimension (rows x cols) : " << vRowIndices.size() << " x " << vRowIndices[100].size() << std::endl;
+            std::cout << "MK: minZ = " << minZ << ", maxD = " << maxD  << ", minD = " << minD << std::endl;
+        }
+    }
+
     // For each left keypoint search a match in the right image
     vector<pair<int, int> > vDistIdx;
     vDistIdx.reserve(N);
@@ -516,7 +536,7 @@ void Frame::ComputeStereoMatches()
         const int &levelL = kpL.octave;
         const float &vL = kpL.pt.y;
         const float &uL = kpL.pt.x;
-        if ((iL <= 2) && (MyDebug.getIsDebug())) {
+        if ((iL >= 10) && (iL <= 20) && (MyDebug.getIsDebugConsoleVeryOften())) {
             //std::cout << "MK: kpL = " << kpL << std::endl;
             std::cout << "MK: levelL = " << levelL << std::endl;
             std::cout << "MK: vL = " << vL << std::endl;
@@ -633,10 +653,13 @@ void Frame::ComputeStereoMatches()
                 }
                 mvDepth[iL]=mbf/disparity;
                 mvuRight[iL] = bestuR;
+                mvuLeftEhmk[iL] = uL;
                 vDistIdx.push_back(pair<int,int>(bestDist,iL));
             }
         }
     }
+
+    MyDebug.setStereoMatchingInfos(mvKeys, mvKeysRight, mvDepth, mvuLeftEhmk, mvuRight, vDistIdx);
 
     sort(vDistIdx.begin(),vDistIdx.end());
     const float median = vDistIdx[vDistIdx.size()/2].first;
@@ -652,6 +675,9 @@ void Frame::ComputeStereoMatches()
             mvDepth[vDistIdx[i].second]=-1;
         }
     }
+    MyDebug.setStereoMatchingFiltInfos(thDist, median, mvDepth, mvuRight);
+    if (MyDebug.getIsDebugConsoleVeryOften())
+        std::cout << "**********************************" << std::endl;
 }
 
 

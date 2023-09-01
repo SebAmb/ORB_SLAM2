@@ -2,16 +2,25 @@
 
 namespace EHMK_PARAMS
 {
-    bool DebugEHMK::isDebugEHMK = true;
+    bool DebugEHMK::isPrintLogDebugEhmk = false;
+    bool DebugEHMK::isPrintLogDebugOftenEhmk = false;
+    bool DebugEHMK::isPrintLogDebugVeryOftenEhmk = false;
+    bool DebugEHMK::isSaveDebugImagesEhmk = false;
     int DebugEHMK::idxImgEhmk = 0;
-    std::string DebugEHMK::dirImgDebugEhmk = "/home/sharedWithHost/VO/Datasets/debugAlgos/ORB_SLAM2/KITTI";
+    std::string DebugEHMK::dirImgDebugEhmk = "/home/sharedWithHost/NoInitForDebug";
     std::string DebugEHMK::dirOrbImgDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/LeftImgOrb";
+    std::vector<cv::KeyPoint> DebugEHMK::keypointsL, DebugEHMK::keypointsR;
+    std::vector<float> DebugEHMK::depths, DebugEHMK::uCoordLs, DebugEHMK::uCoordRs;
+    std::vector<std::pair<int, int> > DebugEHMK::distBtwLeftRightAndIdxsL;
+    float DebugEHMK::thresholdDistMatches, DebugEHMK::medianDistMatches;
+    std::vector<float> DebugEHMK::depthsFilt, DebugEHMK::uCoordRsFilt;
 
     DebugEHMK::DebugEHMK() {}
 
-    DebugEHMK::DebugEHMK(const std::string& filePath)//: isDebugEHMK(true), idxImgEhmk(0), dirImgDebugEhmk(dirImageDebug)
+    DebugEHMK::DebugEHMK(const std::string& filePath)
     {
-        isDebugEHMK = true;
+        //isPrintLogDebugEhmk = true;
+        isSaveDebugImagesEhmk = true;
         idxImgEhmk = 0;
         dirImgDebugEhmk = getDirOfFile(filePath);
         dirOrbImgDebugEhmk = dirImgDebugEhmk + "/LeftImgOrb";
@@ -19,24 +28,79 @@ namespace EHMK_PARAMS
         createDir(dirOrbImgDebugEhmk);
     }
 
+    DebugEHMK::DebugEHMK(const std::string& filePath, 
+                         const bool isSaveDebugImages,
+                         const bool isDebugConsole, const bool isDebugConsoleOften, const bool isDebugConsoleVeryOften)
+    {
+        idxImgEhmk = 0;
+        dirImgDebugEhmk = getDirOfFile(filePath);
+        dirOrbImgDebugEhmk = dirImgDebugEhmk + "/LeftImgOrb";
+        createDir(dirImgDebugEhmk);
+        createDir(dirOrbImgDebugEhmk);
+        isSaveDebugImagesEhmk = isSaveDebugImages;
+        isPrintLogDebugEhmk = isDebugConsole;
+        isPrintLogDebugOftenEhmk = isDebugConsoleOften;
+        isPrintLogDebugVeryOftenEhmk = isDebugConsoleVeryOften;
+    }
+
     void DebugEHMK::saveLeftImageOrb(cv::Mat imL)
     {
         std::string im_name_debug = "left_" + toStringFormat(idxImgEhmk, 6) + ".png";
         cv::imwrite(dirOrbImgDebugEhmk + "/" + im_name_debug, imL);
-        std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
-        std::cout << " dirOrbImgDebugEhmk = " << dirOrbImgDebugEhmk << std::endl;
-        std::cout << " im_name_debug = " << im_name_debug << std::endl;
+        if (false)
+        {
+            std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
+            std::cout << " dirOrbImgDebugEhmk = " << dirOrbImgDebugEhmk << std::endl;
+            std::cout << " im_name_debug = " << im_name_debug << std::endl;
+        }
         idxImgEhmk++;
     }
 
-    void DebugEHMK::setDebugDir(const std::string& dirDebug)
-    {
+
+    void DebugEHMK::setDebugDir(const std::string& dirDebug) {
         dirImgDebugEhmk = dirDebug;
     }
 
-    bool DebugEHMK::getIsDebug()
+    /*void DebugEHMK::setKeypoints(const std::vector<cv::KeyPoint>& kpL, const std::vector<cv::KeyPoint>& kpR) {
+        keypointsL = kpL;
+        keypointsR = kpR;
+    }*/
+
+    void DebugEHMK::setStereoMatchingInfos(const std::vector<cv::KeyPoint>& _kpL, const std::vector<cv::KeyPoint>& _kpR,
+                                        const std::vector<float>& _depths, const std::vector<float>& _uLs, const std::vector<float>& _uRs,
+                                        const std::vector<std::pair<int, int> > _pairDistLR_and_Idx)
     {
-        return isDebugEHMK;
+        keypointsL = _kpL;
+        keypointsR = _kpR;
+        depths = _depths;
+        uCoordLs = _uLs;
+        uCoordRs = _uRs;
+        distBtwLeftRightAndIdxsL = _pairDistLR_and_Idx;
+    }
+
+    void DebugEHMK::setStereoMatchingFiltInfos(const float _thresholdDistMatches, const float _medianDistMatches,
+                                               const std::vector<float> _depthsFilt, const std::vector<float> _uRsFilt)
+    {
+        thresholdDistMatches = _thresholdDistMatches;
+        medianDistMatches = _medianDistMatches;
+        depthsFilt = _depthsFilt;
+        uCoordRsFilt = _uRsFilt;
+    }
+
+    bool DebugEHMK::getIsDebugConsole() {
+        return isPrintLogDebugEhmk;
+    }
+
+    bool DebugEHMK::getIsDebugConsoleOften() {
+        return isPrintLogDebugOftenEhmk;
+    }
+
+    bool DebugEHMK::getIsDebugConsoleVeryOften() {
+        return isPrintLogDebugVeryOftenEhmk;
+    }
+
+    bool DebugEHMK::getIsSaveDebugImages() {
+        return isSaveDebugImagesEhmk;
     }
 
 

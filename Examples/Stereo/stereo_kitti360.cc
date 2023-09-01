@@ -30,6 +30,7 @@
 #include<opencv2/core/core.hpp>
 
 #include<System.h>
+#include "ehmkParams.h"
 
 using namespace std;
 
@@ -82,6 +83,9 @@ int main(int argc, char **argv)
     cout << " sequenceID: " << sequenceID << endl;
     string dirTrajResults(string(argv[4]) + "/KITTI-360/ORB_SLAM2/" + sequenceID + "/" + sequenceID + ".txt");
 
+    // init debug
+    EHMK_PARAMS::DebugEHMK MyDebug(dirTrajResults, true, true, false, false);
+
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
     vTimesTrack.resize(nImages);
@@ -115,7 +119,8 @@ int main(int argc, char **argv)
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 #else
-        std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
+        std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+        //std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
 #endif
 
         // Pass the images to the SLAM system
@@ -124,7 +129,8 @@ int main(int argc, char **argv)
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 #else
-        std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
+        std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+        //std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
 #endif
 
         double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();

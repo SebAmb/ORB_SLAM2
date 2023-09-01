@@ -26,6 +26,7 @@
 #include<opencv2/features2d/features2d.hpp>
 
 #include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
+#include "ehmkParams.h"
 
 #include<stdint-gcc.h>
 
@@ -1327,6 +1328,8 @@ int ORBmatcher::SearchBySim3(KeyFrame *pKF1, KeyFrame *pKF2, vector<MapPoint*> &
 
 int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, const float th, const bool bMono)
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     int nmatches = 0;
 
     // Rotation Histogram (to check rotation consistency)
@@ -1347,6 +1350,10 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
 
     const bool bForward = tlc.at<float>(2)>CurrentFrame.mb && !bMono;
     const bool bBackward = -tlc.at<float>(2)>CurrentFrame.mb && !bMono;
+
+    std::vector<float> reprojErrLeftEhmk, reprojErrRightEhmk, distFeatDescLeftEhmk;
+    //std::vector<float> distFeatDescRightEhmk;
+    std::vector<int> leftFeatAge;
 
     for(int i=0; i<LastFrame.N; i++)
     {
@@ -1425,6 +1432,34 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
 
                 if(bestDist<=TH_HIGH)
                 {
+                    const float ur_ehmk = u - CurrentFrame.mbf*invzc;
+                    const float er_ehmk = fabs(ur_ehmk - CurrentFrame.mvuRight[bestIdx2]);
+                    const float el_ehmk = fabs(u - CurrentFrame.mvKeysUn[bestIdx2].pt.x);
+                    if (MyDebug.getIsDebugConsoleVeryOften()) {
+                        std::cout << "\t -> Mk bestIdx2 : " << bestIdx2 << std::endl;
+                        std::cout << "\t -> Mk disparity (mbf*invzc) : " << CurrentFrame.mbf*invzc << std::endl;
+                        std::cout << "\t -> Mk default u coord of left keypoint, not used : " << CurrentFrame.mvKeysUn[bestIdx2].pt.x << std::endl;
+                        std::cout << "\t -> Mk default u coord of right keypoint : " << CurrentFrame.mvuRight[bestIdx2] << std::endl;
+                        std::cout << "\t -> Mk X re-projected in current image left (u) : " << u << std::endl;
+                        std::cout << "\t -> Mk X re-projected in current image right (ur_ehmk), used : " << ur_ehmk << std::endl;
+                        std::cout << "\t -> Mk reprojection error left (el_ehmk), not used : " << el_ehmk << std::endl;
+                        std::cout << "\t -> Mk reprojection error right (er_ehmk), used : " << er_ehmk << std::endl;
+                        //std::cout << "\t -> Mk test reprojection error left (el_ehmk), not used : " << u - CurrentFrame.mvKeysUn[bestIdx2].pt.x << std::endl;
+                        //std::cout << "\t -> Mk test reprojection error right (er_ehmk), used : " << ur_ehmk - CurrentFrame.mvuRight[bestIdx2] << std::endl;
+                        std::cout << "\t -> Mk el_ehmk-er_ehmk : " << el_ehmk-er_ehmk << std::endl;
+                        std::cout << "\t -> Mk feature age (nb Observations) : " << pMP->Observations() << std::endl;
+                        //std::cout << "\t -> Mk nb map points : " << CurrentFrame.mvpMapPoints.size() << std::endl;
+                        //std::cout << "\t -> Mk nb mvKeysUn points : " << CurrentFrame.mvKeysUn.size() << std::endl;
+                        std::cout << "\t -> Mk test reproj err left : " << LastFrame.mvKeysUn[i].pt.x-CurrentFrame.mvKeysUn[bestIdx2].pt.x << std::endl;
+                        std::cout << "\t -> Mk test reproj err right : " << LastFrame.mvuRight[i]-CurrentFrame.mvuRight[bestIdx2] << std::endl;
+                        std::cout << "\t -> Mk distance between feat descriptors left in current and last frame : " << bestDist << std::endl;
+                        std::cout << "\t *****************" << std::endl;
+                    }
+                    distFeatDescLeftEhmk.push_back(bestDist);
+                    reprojErrLeftEhmk.push_back(el_ehmk);
+                    reprojErrRightEhmk.push_back(er_ehmk);
+                    leftFeatAge.push_back(pMP->Observations());
+                    
                     CurrentFrame.mvpMapPoints[bestIdx2]=pMP;
                     nmatches++;
 
@@ -1443,6 +1478,8 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
             }
         }
     }
+    if (MyDebug.getIsDebugConsoleOften())
+        std::cout << "nb matches 1 = " << nmatches << std::endl;
 
     //Apply rotation consistency
     if(mbCheckOrientation)
@@ -1465,6 +1502,8 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
             }
         }
     }
+    if (MyDebug.getIsDebugConsoleOften())
+        std::cout << "nb matches 2 (after rotation consistency check) = " << nmatches << std::endl;
 
     return nmatches;
 }
