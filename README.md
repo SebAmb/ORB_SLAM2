@@ -5,9 +5,16 @@
 
 
 # compilation
+## install matplotlib
+```
+$ apt-get install -y python-matplotlib python-numpy python2.7-dev
+git clone https://github.com/lava/matplotlib-cpp.git
+```
+```
 cd /home/src/ORB_SLAM2/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j20
+```
 
 
 # 1. License

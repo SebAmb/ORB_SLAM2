@@ -140,7 +140,7 @@ public:
     // Corresponding stereo coordinate and depth for each keypoint.
     // "Monocular" keypoints have a negative value.
     std::vector<float> mvuRight;
-    std::vector<float> mvuLeftEhmk;
+    std::vector<float> mvuLeftEhmk, mvDisparitiesEhmk;
     std::vector<float> mvDepth;
 
     // Bag of Words Vector structures.

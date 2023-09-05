@@ -31,6 +31,7 @@
 #include<Eigen/StdVector>
 
 #include "Converter.h"
+#include "ehmkParams.h"
 
 #include<mutex>
 
@@ -238,6 +239,8 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
 
 int Optimizer::PoseOptimization(Frame *pFrame)
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+
     g2o::SparseOptimizer optimizer;
     g2o::BlockSolver_6_3::LinearSolverType * linearSolver;
 
@@ -368,7 +371,11 @@ int Optimizer::PoseOptimization(Frame *pFrame)
     // At the next optimization, outliers are not included, but at the end they can be classified as inliers again.
     const float chi2Mono[4]={5.991,5.991,5.991,5.991};
     const float chi2Stereo[4]={7.815,7.815,7.815, 7.815};
-    const int its[4]={10,10,10,10};    
+    const int its[4]={10,10,10,10};
+    
+    std::vector<std::vector<float>> reprojErrPoseOptim1FrameMono(4, std::vector<float>(N, std::numeric_limits<float>::quiet_NaN()));
+    std::vector<std::vector<float>> reprojErrPoseOptim1FrameStereo(4, std::vector<float>(N, std::numeric_limits<float>::quiet_NaN()));
+    std::vector<std::vector<bool>> isOutlierPoseOptim1Frame(4, std::vector<bool>(N, std::numeric_limits<bool>::quiet_NaN()));
 
     int nBad=0;
     for(size_t it=0; it<4; it++)
@@ -391,17 +398,20 @@ int Optimizer::PoseOptimization(Frame *pFrame)
             }
 
             const float chi2 = e->chi2();
+            reprojErrPoseOptim1FrameMono[it][idx] = chi2;
 
             if(chi2>chi2Mono[it])
             {                
                 pFrame->mvbOutlier[idx]=true;
                 e->setLevel(1);
                 nBad++;
+                isOutlierPoseOptim1Frame[it][idx] = true;
             }
             else
             {
                 pFrame->mvbOutlier[idx]=false;
                 e->setLevel(0);
+                isOutlierPoseOptim1Frame[it][idx] = false;
             }
 
             if(it==2)
@@ -420,17 +430,20 @@ int Optimizer::PoseOptimization(Frame *pFrame)
             }
 
             const float chi2 = e->chi2();
+            reprojErrPoseOptim1FrameStereo[it][idx] = chi2;
 
             if(chi2>chi2Stereo[it])
             {
                 pFrame->mvbOutlier[idx]=true;
                 e->setLevel(1);
                 nBad++;
+                isOutlierPoseOptim1Frame[it][idx] = true;
             }
             else
             {                
                 e->setLevel(0);
                 pFrame->mvbOutlier[idx]=false;
+                isOutlierPoseOptim1Frame[it][idx] = false;
             }
 
             if(it==2)
@@ -439,7 +452,8 @@ int Optimizer::PoseOptimization(Frame *pFrame)
 
         if(optimizer.edges().size()<10)
             break;
-    }    
+    }
+    MyDebug.savePoseOptimization1Frame(reprojErrPoseOptim1FrameMono, reprojErrPoseOptim1FrameStereo, isOutlierPoseOptim1Frame);
 
     // Recover optimized pose and return number of inliers
     g2o::VertexSE3Expmap* vSE3_recov = static_cast<g2o::VertexSE3Expmap*>(optimizer.vertex(0));

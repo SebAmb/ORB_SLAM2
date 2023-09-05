@@ -25,4 +25,5 @@ Vocabulary/ORBvoc.txt
 build/
 *~
 lib/
+Thirdparty/matplotlib-cpp/
 

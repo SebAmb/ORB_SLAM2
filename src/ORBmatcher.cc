@@ -657,7 +657,9 @@ int ORBmatcher::SearchByBoW(KeyFrame *pKF1, KeyFrame *pKF2, vector<MapPoint *> &
 
 int ORBmatcher::SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2, cv::Mat F12,
                                        vector<pair<size_t, size_t> > &vMatchedPairs, const bool bOnlyStereo)
-{    
+{
+    //EHMK_PARAMS::DebugEHMK MyDebug;
+
     const DBoW2::FeatureVector &vFeatVec1 = pKF1->mFeatVec;
     const DBoW2::FeatureVector &vFeatVec2 = pKF2->mFeatVec;
 
@@ -1353,7 +1355,7 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
 
     std::vector<float> reprojErrLeftEhmk, reprojErrRightEhmk, distFeatDescLeftEhmk;
     //std::vector<float> distFeatDescRightEhmk;
-    std::vector<int> leftFeatAge;
+    std::vector<int> leftFeatAge, idxKpReproj;
 
     for(int i=0; i<LastFrame.N; i++)
     {
@@ -1459,6 +1461,7 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
                     reprojErrLeftEhmk.push_back(el_ehmk);
                     reprojErrRightEhmk.push_back(er_ehmk);
                     leftFeatAge.push_back(pMP->Observations());
+                    idxKpReproj.push_back(bestIdx2);
                     
                     CurrentFrame.mvpMapPoints[bestIdx2]=pMP;
                     nmatches++;
@@ -1479,8 +1482,13 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
         }
     }
     if (MyDebug.getIsDebugConsoleOften())
+    {
         std::cout << "nb matches 1 = " << nmatches << std::endl;
-
+        std::cout << "nb of map points = " << CurrentFrame.mvpMapPoints.size() << std::endl;
+        std::cout << "nb of distFeatDescLeftEhmk = " << distFeatDescLeftEhmk.size() << std::endl;
+    }
+    MyDebug.setFrame2FrameReProjErrInfos(idxKpReproj, reprojErrLeftEhmk, reprojErrRightEhmk, distFeatDescLeftEhmk, leftFeatAge, false);
+    
     //Apply rotation consistency
     if(mbCheckOrientation)
     {
@@ -1497,6 +1505,20 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
                 for(size_t j=0, jend=rotHist[i].size(); j<jend; j++)
                 {
                     CurrentFrame.mvpMapPoints[rotHist[i][j]]=static_cast<MapPoint*>(NULL);
+                    for(size_t tmp_idx=0; tmp_idx<idxKpReproj.size(); tmp_idx++)
+                    {
+                        //if (rotHist[i][j] < distFeatDescLeftEhmk.size())
+                        if (idxKpReproj[tmp_idx] == rotHist[i][j])
+                        {
+                            distFeatDescLeftEhmk[tmp_idx] = std::numeric_limits<float>::quiet_NaN();
+                            reprojErrLeftEhmk[tmp_idx] = std::numeric_limits<float>::quiet_NaN();
+                            reprojErrRightEhmk[tmp_idx] = std::numeric_limits<float>::quiet_NaN();
+                            leftFeatAge[tmp_idx] = std::numeric_limits<int>::quiet_NaN();
+                            break;
+                        }
+                        /*else if (MyDebug.getIsDebugConsoleOften())
+                            std::cout << "rotHist[" << i << "][" << j << "] = " << rotHist[i][j] << std::endl;*/
+                    }
                     nmatches--;
                 }
             }
@@ -1504,6 +1526,13 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, const Frame &LastFrame, 
     }
     if (MyDebug.getIsDebugConsoleOften())
         std::cout << "nb matches 2 (after rotation consistency check) = " << nmatches << std::endl;
+    
+    MyDebug.setFrame2FrameReProjErrInfos(idxKpReproj, reprojErrLeftEhmk, reprojErrRightEhmk, distFeatDescLeftEhmk, leftFeatAge, true);
+
+    reprojErrLeftEhmk.clear();
+    reprojErrRightEhmk.clear();
+    distFeatDescLeftEhmk.clear();
+    leftFeatAge.clear();
 
     return nmatches;
 }

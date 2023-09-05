@@ -54,6 +54,8 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
 
 void Viewer::Run()
 {
+    EHMK_PARAMS::DebugEHMK MyDebug;
+    
     mbFinished = false;
     mbStopped = false;
 
@@ -139,9 +141,12 @@ void Viewer::Run()
         cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
         cv::waitKey(mT);
-        EHMK_PARAMS::DebugEHMK MyDebug;
+        
         if (MyDebug.getIsSaveDebugImages())
+        {
+            MyDebug.CaptureAndSavePangolinImage(d_cam);
             MyDebug.saveLeftImageOrb(im);
+        }
 
         if(menuReset)
         {

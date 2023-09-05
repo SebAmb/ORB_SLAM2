@@ -470,7 +470,9 @@ void Frame::ComputeStereoMatches()
 {
     EHMK_PARAMS::DebugEHMK MyDebug;
 
-    mvuLeftEhmk = vector<float>(N,-1.0f);
+    std::vector<int> mvIdxKpRightEhmk = std::vector<int>(N,-1);
+    mvDisparitiesEhmk = std::vector<float>(N,-1.0f);
+    mvuLeftEhmk = std::vector<float>(N,-1.0f);
     mvuRight = vector<float>(N,-1.0f);
     mvDepth = vector<float>(N,-1.0f);
 
@@ -654,12 +656,14 @@ void Frame::ComputeStereoMatches()
                 mvDepth[iL]=mbf/disparity;
                 mvuRight[iL] = bestuR;
                 mvuLeftEhmk[iL] = uL;
+                mvDisparitiesEhmk[iL] = disparity;
+                mvIdxKpRightEhmk[iL] = bestIdxR;
                 vDistIdx.push_back(pair<int,int>(bestDist,iL));
             }
         }
     }
 
-    MyDebug.setStereoMatchingInfos(mvKeys, mvKeysRight, mvDepth, mvuLeftEhmk, mvuRight, vDistIdx);
+    MyDebug.setStereoMatchingInfos(mvKeys, mvKeysRight, mvIdxKpRightEhmk, mvDepth, mvDisparitiesEhmk, mvuLeftEhmk, mvuRight, vDistIdx);
 
     sort(vDistIdx.begin(),vDistIdx.end());
     const float median = vDistIdx[vDistIdx.size()/2].first;

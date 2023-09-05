@@ -22,6 +22,7 @@
 #include "LoopClosing.h"
 #include "ORBmatcher.h"
 #include "Optimizer.h"
+#include "ehmkParams.h"
 
 #include<mutex>
 
@@ -207,6 +208,8 @@ void LocalMapping::MapPointCulling()
 
 void LocalMapping::CreateNewMapPoints()
 {
+    //EHMK_PARAMS::DebugEHMK MyDebug;
+
     // Retrieve neighbor keyframes in covisibility graph
     int nn = 10;
     if(mbMonocular)
