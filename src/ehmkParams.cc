@@ -2,7 +2,9 @@
 
 namespace EHMK_PARAMS
 {
-    std::string extSaveImg = ".png";
+    const int TG_W(512), TG_H(512);
+    //static bool isFirstTime(true);
+    const std::string extSaveImg = ".jpg";
     bool DebugEHMK::isPrintLogDebugEhmk = false;
     bool DebugEHMK::isPrintLogDebugOftenEhmk = false;
     bool DebugEHMK::isPrintLogDebugVeryOftenEhmk = false;
@@ -11,6 +13,7 @@ namespace EHMK_PARAMS
     std::string DebugEHMK::dirImgDebugEhmk = "/home/sharedWithHost/NoInitForDebug";
     std::string DebugEHMK::dirOrbImgDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/LeftImgOrb";
     std::string DebugEHMK::dirPangolinViewImgDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/PangolinViewImg";
+    std::string DebugEHMK::dirConcatOrbPangolinImgDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/ConcatOrbPangolinDebug";
     std::string DebugEHMK::dirOrbStereoDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/OrbStereo";
     std::string DebugEHMK::dirOrbF2FDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/OrbFrame2Frame";
     std::string DebugEHMK::dirOrbLocalMapDebugEhmk = DebugEHMK::dirImgDebugEhmk + "/OrbLocalMap";
@@ -24,17 +27,19 @@ namespace EHMK_PARAMS
     std::vector<float> DebugEHMK::f2f_reprojErrLeft, DebugEHMK::f2f_reprojErrRight, DebugEHMK::f2f_distFeatDescLeft;
     // std::vector<float> DebugEHMK::f2f_distFeatDescRight;
     std::vector<int> DebugEHMK::f2f_leftFeatAge;
+    std::vector<std::string> DebugEHMK::pathsImgLeft, DebugEHMK::pathsImgRight;
 
     DebugEHMK::DebugEHMK() {}
 
-    DebugEHMK::DebugEHMK(const std::string& filePath)
+    DebugEHMK::DebugEHMK(const std::string& _filePath)
     {
         //isPrintLogDebugEhmk = true;
         //isSaveDebugImagesEhmk = true;
         idxImgEhmk = 0;
-        dirImgDebugEhmk = getDirOfFile(filePath);
+        dirImgDebugEhmk = getDirOfFile(_filePath);
         dirOrbImgDebugEhmk = dirImgDebugEhmk + "/LeftImgOrb";
         dirPangolinViewImgDebugEhmk = dirImgDebugEhmk + "/PangolinViewImg";
+        dirConcatOrbPangolinImgDebugEhmk = dirImgDebugEhmk + "/ConcatOrbPangolinDebug";
         dirOrbStereoDebugEhmk = dirImgDebugEhmk + "/OrbStereo";
         dirOrbF2FDebugEhmk = dirImgDebugEhmk + "/OrbFrame2Frame";
         dirOrbLocalMapDebugEhmk = dirImgDebugEhmk + "/OrbLocalMap";
@@ -42,20 +47,22 @@ namespace EHMK_PARAMS
         createDir(dirImgDebugEhmk);
         createDir(dirOrbImgDebugEhmk);
         createDir(dirPangolinViewImgDebugEhmk);
+        createDir(dirConcatOrbPangolinImgDebugEhmk);
         createDir(dirOrbStereoDebugEhmk);
         createDir(dirOrbF2FDebugEhmk);
         createDir(dirOrbLocalMapDebugEhmk);
         createDir(dirF2FPoseOptimDebugEhmk);
     }
 
-    DebugEHMK::DebugEHMK(const std::string& filePath, 
-                         const bool isSaveDebugImages,
-                         const bool isDebugConsole, const bool isDebugConsoleOften, const bool isDebugConsoleVeryOften)
+    DebugEHMK::DebugEHMK(const std::string& _filePath, 
+                         const bool _isSaveDebugImages,
+                         const bool _isDebugConsole, const bool _isDebugConsoleOften, const bool _isDebugConsoleVeryOften)
     {
         idxImgEhmk = 0;
-        dirImgDebugEhmk = getDirOfFile(filePath);
+        dirImgDebugEhmk = getDirOfFile(_filePath);
         dirOrbImgDebugEhmk = dirImgDebugEhmk + "/LeftImgOrb";
         dirPangolinViewImgDebugEhmk = dirImgDebugEhmk + "/PangolinViewImg";
+        dirConcatOrbPangolinImgDebugEhmk = dirImgDebugEhmk + "/ConcatOrbPangolinDebug";
         dirOrbStereoDebugEhmk = dirImgDebugEhmk + "/OrbStereo";
         dirOrbF2FDebugEhmk = dirImgDebugEhmk + "/OrbFrame2Frame";
         dirOrbLocalMapDebugEhmk = dirImgDebugEhmk + "/OrbLocalMap";
@@ -63,20 +70,65 @@ namespace EHMK_PARAMS
         createDir(dirImgDebugEhmk);
         createDir(dirOrbImgDebugEhmk);
         createDir(dirPangolinViewImgDebugEhmk);
+        createDir(dirConcatOrbPangolinImgDebugEhmk);
         createDir(dirOrbStereoDebugEhmk);
         createDir(dirOrbF2FDebugEhmk);
         createDir(dirOrbLocalMapDebugEhmk);
         createDir(dirF2FPoseOptimDebugEhmk);
-        isSaveDebugImagesEhmk = isSaveDebugImages;
-        isPrintLogDebugEhmk = isDebugConsole;
-        isPrintLogDebugOftenEhmk = isDebugConsoleOften;
-        isPrintLogDebugVeryOftenEhmk = isDebugConsoleVeryOften;
+        isSaveDebugImagesEhmk = _isSaveDebugImages;
+        isPrintLogDebugEhmk = _isDebugConsole;
+        isPrintLogDebugOftenEhmk = _isDebugConsoleOften;
+        isPrintLogDebugVeryOftenEhmk = _isDebugConsoleVeryOften;
     }
 
 
-    void DebugEHMK::CaptureAndSavePangolinImage(const pangolin::View& view)
+    void DebugEHMK::saveConcatenatedDebugImgLeftOrbAndPangolinView(const pangolin::View& _view, const cv::Mat& _imL)
     {
-        std::string pangolin_img_name_debug = "pangolin_" + toStringFormat(idxImgEhmk, 6) + extSaveImg;
+        //std::string img_name_debug = "ConcatOrbPangolin_" + toStringFormat(idxImgEhmk, 6) + extSaveImg;
+        std::string img_name_debug = "ConcatOrbPangolin_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + extSaveImg;
+
+        if (false)
+        {
+            std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
+            std::cout << " dirConcatOrbPangolinImgDebugEhmk = " << dirConcatOrbPangolinImgDebugEhmk << std::endl;
+            std::cout << " img_name_debug = " << img_name_debug << std::endl;
+        }
+
+        // get view dimension
+        pangolin::Viewport view_dim = pangolin::DisplayBase().GetBounds();
+
+        int widthPangolin = view_dim.w;
+        int heightPangolin = view_dim.h;
+        int widthLeftOrb = _imL.cols;
+        int heightLeftOrb = _imL.rows;
+        int tg_h = MIN(heightPangolin, heightLeftOrb);
+
+        // Créez un tableau pour stocker les pixels de l'image
+        std::vector<uint8_t> buffer(3 * widthPangolin * heightPangolin);
+
+        // Capturez le contenu de la vue
+        glReadPixels(0, 0, widthPangolin, heightPangolin, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+
+        // Inversez l'image (OpenGL stocke les lignes à l'envers)
+        cv::Mat pangolinImg(heightPangolin, widthPangolin, CV_8UC3);
+        for (int i = 0; i < heightPangolin; ++i) {
+            memcpy(pangolinImg.ptr(i), buffer.data() + (heightPangolin - 1 - i) * 3 * widthPangolin, 3 * widthPangolin);
+        }
+
+        cv::Mat pangolinImgResized, imLeftResized, concatLeftPangolinImg;
+        cv::resize(pangolinImg, pangolinImgResized, cv::Size(TG_W, tg_h), cv::INTER_LINEAR);
+        cv::resize(_imL, imLeftResized, cv::Size(widthLeftOrb, tg_h), cv::INTER_LINEAR);
+        ConcatImages(pangolinImgResized, imLeftResized, concatLeftPangolinImg);
+
+        cv::imwrite(dirConcatOrbPangolinImgDebugEhmk + "/" + img_name_debug, concatLeftPangolinImg);
+
+        idxImgEhmk++;
+    }
+
+
+    void DebugEHMK::CaptureAndSavePangolinImage(const pangolin::View& _view)
+    {
+        std::string pangolin_img_name_debug = "pangolin_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + extSaveImg;
         if (false)
         {
             std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
@@ -106,10 +158,10 @@ namespace EHMK_PARAMS
     }
 
 
-    void DebugEHMK::saveLeftImageOrb(const cv::Mat& imL)
+    void DebugEHMK::saveLeftImageOrb(const cv::Mat& _imL)
     {
-        std::string im_name_debug = "left_" + toStringFormat(idxImgEhmk, 6) + extSaveImg;
-        cv::imwrite(dirOrbImgDebugEhmk + "/" + im_name_debug, imL);
+        std::string im_name_debug = "left_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + extSaveImg;
+        cv::imwrite(dirOrbImgDebugEhmk + "/" + im_name_debug, _imL);
         if (false)
         {
             std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
@@ -133,7 +185,7 @@ namespace EHMK_PARAMS
             std::cerr << "Error: size of vectors in savePoseOptimization1Frame function are different." << std::endl;
         }
 
-        std::string csv_filename("f2f_pose_optim_" + toStringFormat(idxImgEhmk, 6) + ".csv");
+        std::string csv_filename("f2f_pose_optim_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + ".csv");
         const std::string path_csv_file = dirF2FPoseOptimDebugEhmk + "/" + csv_filename;
         if (false)
         {
@@ -146,10 +198,10 @@ namespace EHMK_PARAMS
         std::ofstream csv_file(path_csv_file);
         if (csv_file.is_open())
         {
-            csv_file << "indexPoint, chi2Mono_0, chi2Stereo_0, isOutlier_0, " <<
-                        "chi2Mono_1, chi2Stereo_1, isOutlier_1, " << 
-                        "chi2Mono_2, chi2Stereo_2, isOutlier_2, " << 
-                        "chi2Mono_3, chi2Stereo_3, isOutlier_3, " << 
+            csv_file << "indexPoint,chi2Mono_0,chi2Stereo_0,isOutlier_0," <<
+                        "chi2Mono_1,chi2Stereo_1,isOutlier_1," << 
+                        "chi2Mono_2,chi2Stereo_2,isOutlier_2," << 
+                        "chi2Mono_3,chi2Stereo_3,isOutlier_3" << 
                         std::endl;
             //std::cout << "max index csv file row = " << f2f_leftFeatAge.size() << std::endl;
             for (size_t i = 0; i < _chi2PoseOptim1FrameMono[0].size(); i++)
@@ -161,7 +213,7 @@ namespace EHMK_PARAMS
                             _chi2PoseOptim1FrameMono[0][i] << "," << _chi2PoseOptim1FrameStereo[0][i] << "," << _isOutlierPoseOptim1Frame[0][i] << "," <<
                             _chi2PoseOptim1FrameMono[1][i] << "," << _chi2PoseOptim1FrameStereo[1][i] << "," << _isOutlierPoseOptim1Frame[1][i] << "," <<
                             _chi2PoseOptim1FrameMono[2][i] << "," << _chi2PoseOptim1FrameStereo[2][i] << "," << _isOutlierPoseOptim1Frame[2][i] << "," <<
-                            _chi2PoseOptim1FrameMono[3][i] << "," << _chi2PoseOptim1FrameStereo[3][i] << "," << _isOutlierPoseOptim1Frame[3][i] << "," <<
+                            _chi2PoseOptim1FrameMono[3][i] << "," << _chi2PoseOptim1FrameStereo[3][i] << "," << _isOutlierPoseOptim1Frame[3][i] <<
                             std::endl;
             }
             csv_file.close();
@@ -173,10 +225,44 @@ namespace EHMK_PARAMS
     }
 
 
-    void DebugEHMK::setDebugDir(const std::string& dirDebug) {
-        dirImgDebugEhmk = dirDebug;
+    void DebugEHMK::setDebugDir(const std::string& _dirDebug) {
+        dirImgDebugEhmk = _dirDebug;
     }
 
+    void DebugEHMK::setImagesPath(const std::vector<std::string>& _pathsImgLeft, 
+                                  const std::vector<std::string>& _pathsImgRight)
+    {
+        pathsImgLeft = _pathsImgLeft;
+        pathsImgRight = _pathsImgRight;
+
+        const std::string csv_filename = "pathImages.csv";
+        const std::string path_csv_file = dirImgDebugEhmk + "/" + csv_filename;
+        if (false)
+        {
+            std::cout << " idxImgEhmk = " << idxImgEhmk << std::endl;
+            std::cout << " dirImgDebugEhmk = " << dirImgDebugEhmk << std::endl;
+            std::cout << " csv_filename = " << csv_filename << std::endl;
+        }
+
+        // save data in csv
+        std::ofstream csv_file(path_csv_file);
+        if (csv_file.is_open())
+        {
+            csv_file << "pathImagesLeft, pathImagesRight" <<
+                        std::endl;
+            
+            for (size_t i = 0; i < pathsImgLeft.size(); i++)
+            {
+                csv_file << pathsImgLeft[i] << "," << pathsImgRight[i] << std::endl;
+            }
+            csv_file.close();
+        }
+        else
+        {
+            std::cerr << "Cannot open Csv file (" << csv_filename.c_str() << ")." << std::endl;
+        }
+
+    }
 
     void DebugEHMK::setStereoMatchingInfos(const std::vector<cv::KeyPoint>& _kpL, const std::vector<cv::KeyPoint>& _kpR,
                                            const std::vector<int>& _idxKpR,
@@ -242,7 +328,7 @@ namespace EHMK_PARAMS
                         std::endl;
         }
 
-        std::string csv_filename = "stereo_orb_" + toStringFormat(idxImgEhmk, 6) + ".csv";
+        std::string csv_filename = "stereo_orb_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + ".csv";
         std::string path_csv_file = dirOrbStereoDebugEhmk + "/" + csv_filename;
         if (false)
         {
@@ -255,11 +341,11 @@ namespace EHMK_PARAMS
         std::ofstream csv_file(path_csv_file);
         if (csv_file.is_open())
         {
-            csv_file << "keypointsLeft_X, keypointsLeft_Y, " <<
-                        "depths, disparities, " <<
-                        "uCoordLefts, uCoordRights, " << 
-                        "indexKeypointRight, " << 
-                        "thresholdDistMatches, medianDistMatches, depthsFilt, uCoordRightsFilt" <<
+            csv_file << "keypointsLeft_X,keypointsLeft_Y," <<
+                        "depths,disparities," <<
+                        "uCoordLefts,uCoordRights," << 
+                        "indexKeypointRight," << 
+                        "thresholdDistMatches,medianDistMatches,depthsFilt,uCoordRightsFilt" <<
                         std::endl;
             
             for (size_t i = 0; i < depthsFilt.size(); i++)
@@ -269,7 +355,7 @@ namespace EHMK_PARAMS
                             std::setprecision(2) << depths[i] << "," << disparities[i] << "," <<
                             std::setprecision(2) << uCoordLs[i] << "," << uCoordRs[i] << "," << idxKeypointR[i] << "," <<
                             std::setprecision(5) << thresholdDistMatches << "," << medianDistMatches << "," <<
-                            std::setprecision(2) << depthsFilt[i] << "," << uCoordRsFilt[i] << "," << 
+                            std::setprecision(2) << depthsFilt[i] << "," << uCoordRsFilt[i] <<
                             std::endl;
             }
             csv_file.close();
@@ -282,7 +368,7 @@ namespace EHMK_PARAMS
         //**************************************************
         //**************************************************
 
-        csv_filename = "stereo_orb_" + toStringFormat(idxImgEhmk, 6) + "_2.csv";
+        csv_filename = "stereo_orb_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + "_2.csv";
         path_csv_file = dirOrbStereoDebugEhmk + "/" + csv_filename;
         if (false)
         {
@@ -295,12 +381,12 @@ namespace EHMK_PARAMS
         std::ofstream csv_file_2(path_csv_file);
         if (csv_file_2.is_open())
         {
-            csv_file_2 << "keypointsRight_X, keypointsRight_Y, " << std::endl;
+            csv_file_2 << "keypointsRight_X,keypointsRight_Y" << std::endl;
             
             for (size_t i = 0; i < keypointsR.size(); i++)
             {
                 csv_file_2 << std::fixed << 
-                            std::setprecision(2) << keypointsR[i].pt.x << "," << keypointsR[i].pt.y << "," <<
+                            std::setprecision(2) << keypointsR[i].pt.x << "," << keypointsR[i].pt.y <<
                             std::endl;
             }
             csv_file_2.close();
@@ -313,7 +399,7 @@ namespace EHMK_PARAMS
         //**************************************************
         //**************************************************
 
-        csv_filename = "stereo_orb_" + toStringFormat(idxImgEhmk, 6) + "_3.csv";
+        csv_filename = "stereo_orb_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + "_3.csv";
         path_csv_file = dirOrbStereoDebugEhmk + "/" + csv_filename;
         if (false)
         {
@@ -326,13 +412,13 @@ namespace EHMK_PARAMS
         std::ofstream csv_file_3(path_csv_file);
         if (csv_file_3.is_open())
         {
-            csv_file_3 << "distBtwLeftRight, idxLeftForDistBtwLeftRight, " << 
+            csv_file_3 << "distBtwLeftRight,idxLeftForDistBtwLeftRight" << 
                         std::endl;
             
             for (size_t i = 0; i < distBtwLeftRightAndIdxsL.size(); i++)
             {
                 csv_file_3 << std::fixed << 
-                            std::setprecision(2) << distBtwLeftRightAndIdxsL[i].first << "," << distBtwLeftRightAndIdxsL[i].second << "," <<
+                            std::setprecision(2) << distBtwLeftRightAndIdxsL[i].first << "," << distBtwLeftRightAndIdxsL[i].second <<
                             std::endl;
             }
             csv_file_3.close();
@@ -376,9 +462,9 @@ namespace EHMK_PARAMS
             std::cerr << "Error: size of vectors in setFrame2FrameReProjErrInfos function are different." << std::endl;
         }
 
-        std::string csv_filename("f2f_orb_" + toStringFormat(idxImgEhmk, 6) + ".csv");
+        std::string csv_filename("f2f_orb_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + ".csv");
         if (isFiltered)
-            csv_filename = "f2f_orb_" + toStringFormat(idxImgEhmk, 6) + "_filtered.csv";
+            csv_filename = "f2f_orb_" + getBasenameOfPathWoExt(pathsImgLeft[idxImgEhmk]) + "_filtered.csv";
         const std::string path_csv_file = dirOrbF2FDebugEhmk + "/" + csv_filename;
         if (false)
         {
@@ -391,8 +477,8 @@ namespace EHMK_PARAMS
         std::ofstream csv_file(path_csv_file);
         if (csv_file.is_open())
         {
-            csv_file << "indexKpReprojected, reprojectionErrorLeft, reprojectionErrorRight, " <<
-                        "distFeatDescriptorLeft, leftFeatureAge, " <<
+            csv_file << "indexKpReprojected,reprojectionErrorLeft,reprojectionErrorRight," <<
+                        "distFeatDescriptorLeft,leftFeatureAge" <<
                         std::endl;
             //std::cout << "max index csv file row = " << f2f_leftFeatAge.size() << std::endl;
             for (size_t i = 0; i < f2f_leftFeatAge.size(); i++)
@@ -401,7 +487,7 @@ namespace EHMK_PARAMS
                 csv_file << std::fixed << 
                             _idxKpReproj[i] << "," <<
                             std::setprecision(5) << f2f_reprojErrLeft[i] << "," << f2f_reprojErrRight[i] << "," <<
-                            std::setprecision(5) << f2f_distFeatDescLeft[i] << "," << f2f_leftFeatAge[i] << "," <<
+                            std::setprecision(5) << f2f_distFeatDescLeft[i] << "," << f2f_leftFeatAge[i] <<
                             std::endl;
             }
             csv_file.close();
@@ -474,26 +560,25 @@ namespace EHMK_PARAMS
         return leading_zeros + num_str;
     }
 
-    //template<typename myVector>
-    //void saveCsv(const std::vector<myVector>& vecToSave);
-    //void DebugEHMK::saveCsv(const std::vector<myVector>& vecToSave, const std::string pathCsvFile)
-    //void DebugEHMK::saveCsv(const std::vector<float> vecToSave)
-    //{
-        //std::ofstream csv_file(pathCsvFile);
-        /*if (csv_file.is_open())
-        {
-            csv_file << "Vecteur1, Vecteur2, Vecteur3" << std::endl;
-            for (size_t i = 0; i < vecteur1.size(); ++i)
-            {
-                csv_file << std::fixed << std::setprecision(2) << vecteur1[i] << ","
-                        << vecteur2[i] << ","
-                        << vecteur3[i] << std::endl;
-            }
-            csv_file.close();
-        }
+
+    void DebugEHMK::ConcatImages(const cv::Mat& img1, const cv::Mat& img2, cv::Mat& concatImg)
+    {
+        bool isConcatHorizontal(true);
+        if (isConcatHorizontal)
+            cv::hconcat(img1, img2, concatImg); // horizontal concat
         else
-        {
-            std::cerr << "Cannot open Csv file." << std::endl;
-        }*/
-    //}
+            cv::vconcat(img1, img2, concatImg); // vertical concat
+    }
+
+    std::string DebugEHMK::getBasenameOfPath(const std::string& path)
+    {
+        return path.substr(path.find_last_of("/") + 1);
+    }
+
+    std::string DebugEHMK::getBasenameOfPathWoExt(const std::string& path)
+    {
+        std::string basename = path.substr(path.find_last_of("/") + 1);
+        return basename.substr(0, basename.find_last_of("."));
+    }
+
 }

@@ -144,8 +144,13 @@ void Viewer::Run()
         
         if (MyDebug.getIsSaveDebugImages())
         {
-            MyDebug.CaptureAndSavePangolinImage(d_cam);
-            MyDebug.saveLeftImageOrb(im);
+            if (false)
+            {
+                MyDebug.CaptureAndSavePangolinImage(d_cam);
+                MyDebug.saveLeftImageOrb(im);
+            }
+            else
+                MyDebug.saveConcatenatedDebugImgLeftOrbAndPangolinView(d_cam, im);
         }
 
         if(menuReset)

@@ -27,19 +27,23 @@ namespace EHMK_PARAMS
         public:
             DebugEHMK();
 
-            DebugEHMK(const std::string& filePath);
+            DebugEHMK(const std::string& _filePath);
 
-            DebugEHMK(const std::string& filePath, 
-                      const bool isSaveDebugImages,
-                      const bool isDebugConsole, const bool isDebugConsoleOften, const bool isDebugConsoleVeryOften);
+            DebugEHMK(const std::string& _filePath, 
+                      const bool _isSaveDebugImages,
+                      const bool _isDebugConsole, const bool _isDebugConsoleOften, const bool _isDebugConsoleVeryOften);
 
-            void saveLeftImageOrb(const cv::Mat& imL);
+            void saveLeftImageOrb(const cv::Mat& _imL);
             
-            void CaptureAndSavePangolinImage(const pangolin::View& view);
+            void CaptureAndSavePangolinImage(const pangolin::View& _view);
+
+            void saveConcatenatedDebugImgLeftOrbAndPangolinView(const pangolin::View& _view, const cv::Mat& _imL);
 
 
-            void setDebugDir(const std::string& dirDebug);
-            //void setKeypointsStereo(const std::vector<cv::KeyPoint>& kpL, const std::vector<cv::KeyPoint>& kpR);
+            void setDebugDir(const std::string& _dirDebug);
+
+            void setImagesPath(const std::vector<std::string>& _pathsImgLeft, const std::vector<std::string>& _pathsImgRight);
+
             void setStereoMatchingInfos(const std::vector<cv::KeyPoint>& _kpL, const std::vector<cv::KeyPoint>& _kpR,
                                         const std::vector<int>& _idxKpR,
                                         const std::vector<float>& _depths, const std::vector<float>& _disparities, 
@@ -70,8 +74,9 @@ namespace EHMK_PARAMS
             static bool isPrintLogDebugVeryOftenEhmk; // will print too toooo much logs...
             static bool isSaveDebugImagesEhmk;
             static int idxImgEhmk;
+            static std::vector<std::string> pathsImgLeft, pathsImgRight;
             static std::string dirImgDebugEhmk;
-            static std::string dirOrbImgDebugEhmk, dirPangolinViewImgDebugEhmk;
+            static std::string dirConcatOrbPangolinImgDebugEhmk, dirOrbImgDebugEhmk, dirPangolinViewImgDebugEhmk;
             static std::string dirOrbStereoDebugEhmk, dirOrbF2FDebugEhmk, dirOrbLocalMapDebugEhmk, dirF2FPoseOptimDebugEhmk; // save feature displacement, reprojection errors, etc.
             //
             // for Stereo
@@ -101,6 +106,13 @@ namespace EHMK_PARAMS
             void createDir(const std::string& dirFile);
 
             std::string toStringFormat(int number, int length);
+
+            void ConcatImages(const cv::Mat& img1, const cv::Mat& img2, cv::Mat& concatImg);
+
+            std::string getBasenameOfPath(const std::string& path);
+
+            std::string getBasenameOfPathWoExt(const std::string& path);
+
     };
     
 } // namespace EHMK_PARAMS

@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 
     // init debug
     EHMK_PARAMS::DebugEHMK MyDebug(dirTrajResults, true, true, false, false);
+    MyDebug.setImagesPath(vstrImageLeft, vstrImageRight);
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;

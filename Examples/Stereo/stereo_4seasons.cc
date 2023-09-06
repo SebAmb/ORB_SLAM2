@@ -75,9 +75,6 @@ int main(int argc, char **argv)
     string dateAcquisition(argv[5]);
     string dirTrajResults(string(argv[6]) + "/4seasons/ORB_SLAM2/" + sequenceID + "/" + sequenceID + ".txt");
 
-    // init debug
-    EHMK_PARAMS::DebugEHMK MyDebug(dirTrajResults, true, true, false, false);
-
     cout << "Loading images for sequence " << sequenceID << "..." << std::endl;
     LoadImages(strPathToSequence, sequenceID, dateAcquisition,
                vstrImageLeft, vstrImageRight, vTimestamps, vstrImageId);
@@ -109,6 +106,10 @@ int main(int argc, char **argv)
     }
 
     const int nImages = vstrImageLeft.size();
+
+    // init debug
+    EHMK_PARAMS::DebugEHMK MyDebug(dirTrajResults, true, true, false, false);
+    MyDebug.setImagesPath(vstrImageLeft, vstrImageRight);
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::STEREO,true);
